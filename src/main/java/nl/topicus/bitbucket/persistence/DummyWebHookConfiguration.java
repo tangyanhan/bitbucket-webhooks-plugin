@@ -23,11 +23,12 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 	private boolean isPrUpdated;
 	private boolean isPrCreated;
 
-	public DummyWebHookConfiguration(String title, String url, boolean enabled, boolean isTagCreated,
+	public DummyWebHookConfiguration(int repoId, String title, String url, boolean enabled, boolean isTagCreated,
 									 boolean isBranchDeleted, boolean isBranchCreated, boolean isRepoPush,
 									 boolean isPrDeclined, boolean isPrRescoped, boolean isPrMerged,
 									 boolean isPrReopened, boolean isPrUpdated, boolean isPrCreated)
 	{
+		this.repoId = repoId;
 		this.title = title;
 		this.URL = url;
 		this.enabled = enabled;
@@ -71,12 +72,6 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 	public Integer getRepositoryId()
 	{
 		return repoId;
-	}
-
-	@Override
-	public void setRepositoryId(Integer repoId)
-	{
-		this.repoId = repoId;
 	}
 
 	@Override

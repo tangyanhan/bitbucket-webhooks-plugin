@@ -75,7 +75,7 @@ public class RepositoryConfigServlet extends HttpServlet
 			ImmutableMap.Builder<String, Object> properties = ImmutableMap.<String, Object>builder().put("repository", repository);
 			if (id.isPresent())
 			{
-				WebHookConfiguration webHookConfiguration = webHookConfigurationDao.getWebHookConfigurations(id.get().getValue());
+				WebHookConfiguration webHookConfiguration = webHookConfigurationDao.getWebHookConfiguration(id.get().getValue());
 				if (webHookConfiguration != null && webHookConfiguration.getRepositoryId().equals(repository.getId()))
 				{
 					properties.put("configuration", webHookConfiguration);
@@ -91,7 +91,7 @@ public class RepositoryConfigServlet extends HttpServlet
 				Optional<NameValuePair> id = queryParams.stream().filter(param -> param.getName().equals("id")).findFirst();
 				if (id.isPresent())
 				{
-					WebHookConfiguration webHookConfiguration = webHookConfigurationDao.getWebHookConfigurations(id.get().getValue());
+					WebHookConfiguration webHookConfiguration = webHookConfigurationDao.getWebHookConfiguration(id.get().getValue());
 					if (webHookConfiguration != null && webHookConfiguration.getRepositoryId().equals(repository.getId()))
 					{
 						webHookConfigurationDao.deleteWebhookConfiguration(webHookConfiguration);
@@ -153,7 +153,9 @@ public class RepositoryConfigServlet extends HttpServlet
 		WebHookConfiguration webHookConfiguration = webHookConfigurationDao.createOrUpdateWebHookConfiguration(repository, id, title, url, enabled, isTagCreated, isBranchDeleted, isBranchCreated, isRepoPush, isPrDeclined, isPrRescoped, isPrMerged, isPrReopened, isPrUpdated, isPrCreated);
 		if (webHookConfiguration == null)
 		{
-			webHookConfiguration = new DummyWebHookConfiguration(title, url, enabled, isTagCreated, isBranchDeleted, isBranchCreated, isRepoPush, isPrDeclined, isPrRescoped, isPrMerged, isPrReopened, isPrUpdated, isPrCreated);
+			webHookConfiguration = new DummyWebHookConfiguration(repository.getId(), title, url, enabled,
+					isTagCreated, isBranchDeleted, isBranchCreated, isRepoPush, isPrDeclined, isPrRescoped,
+					isPrMerged, isPrReopened, isPrUpdated, isPrCreated);
 			String template = "nl.topicus.templates.edit";
 			render(resp, template, ImmutableMap.<String, Object>builder().put("repository", repository).put("configuration", webHookConfiguration).build());
 		}

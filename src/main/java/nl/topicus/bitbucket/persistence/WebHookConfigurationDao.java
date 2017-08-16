@@ -3,11 +3,13 @@ package nl.topicus.bitbucket.persistence;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.bitbucket.repository.Repository;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import net.java.ao.DBParam;
+import com.google.common.collect.ImmutableMap;
 import net.java.ao.Query;
 import nl.topicus.bitbucket.events.EventType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.*;
 
 @Component
 public class WebHookConfigurationDao {
@@ -19,16 +21,24 @@ public class WebHookConfigurationDao {
     }
 
     public WebHookConfiguration[] getWebHookConfigurations(Repository repo) {
-        return activeObjects.find(WebHookConfiguration.class, Query.select().where("REPO_ID = ?", repo.getId()));
+        return activeObjects.find(WebHookConfiguration.class, Query.select()
+                .where(COLUMN_REPO_ID + " = ?", repo.getId())
+                .order(COLUMN_TITLE));
     }
 
     public WebHookConfiguration[] getEnabledWebHookConfigurations(Repository repo, EventType eventType) {
-        String clause = String.format("REPO_ID = ? AND IS_ENABLED = ? AND %s = ?", eventType.getQueryColumn());
-        return activeObjects.find(WebHookConfiguration.class, Query.select().where(clause, repo.getId(), true, true));
+        return activeObjects.find(WebHookConfiguration.class, Query.select()
+                .where(COLUMN_REPO_ID + " = ? AND " + COLUMN_ENABLED + " = ? AND " + eventType.getQueryColumn() + " = ?",
+                        repo.getId(), true, true)
+                .order(COLUMN_TITLE));
     }
 
-    public WebHookConfiguration getWebHookConfigurations(String id) {
+    public WebHookConfiguration getWebHookConfiguration(String id) {
         return activeObjects.get(WebHookConfiguration.class, Integer.valueOf(id));
+    }
+
+    public int deleteWebhookConfigurations(Repository repo) {
+        return activeObjects.deleteWithSQL(WebHookConfiguration.class, COLUMN_REPO_ID + " = ?", repo.getId());
     }
 
     public void deleteWebhookConfiguration(WebHookConfiguration webHookConfiguration) {
@@ -37,7 +47,8 @@ public class WebHookConfigurationDao {
 
     public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url,
                                                                    boolean enabled) {
-        return createOrUpdateWebHookConfiguration(rep, id, title, url, enabled, false, true, true, true, true, true, true, true, true, true);
+        return createOrUpdateWebHookConfiguration(rep, id, title, url, enabled,
+                false, true, true, true, true, true, true, true, true, true);
     }
 
     public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url,
@@ -45,31 +56,41 @@ public class WebHookConfigurationDao {
                                                                    boolean isBranchCreated, boolean isRepoPush, boolean isPrDeclined,
                                                                    boolean isPrRescoped, boolean isPrMerged, boolean isPrReopened,
                                                                    boolean isPrUpdated, boolean isPrCreated) {
-        WebHookConfiguration webHookConfiguration = null;
-
-        if (id != null) {
-            webHookConfiguration = getWebHookConfigurations(id);
-        }
+        WebHookConfiguration webHookConfiguration = id == null ? null : getWebHookConfiguration(id);
         if (webHookConfiguration == null || !webHookConfiguration.getRepositoryId().equals(rep.getId())) {
-            webHookConfiguration = activeObjects.create(WebHookConfiguration.class, new DBParam("REPO_ID", rep.getId()), new DBParam("TITLE", title), new DBParam("URL", url), new DBParam("IS_ENABLED", enabled));
-
+            webHookConfiguration = activeObjects.create(WebHookConfiguration.class, ImmutableMap.<String, Object>builder()
+                    .put(COLUMN_BRANCH_CREATED, isBranchCreated)
+                    .put(COLUMN_BRANCH_DELETED, isBranchDeleted)
+                    .put(COLUMN_ENABLED, enabled)
+                    .put(COLUMN_PR_CREATED, isPrCreated)
+                    .put(COLUMN_PR_DECLINED, isPrDeclined)
+                    .put(COLUMN_PR_MERGED, isPrMerged)
+                    .put(COLUMN_PR_REOPENED, isPrReopened)
+                    .put(COLUMN_PR_RESCOPED, isPrRescoped)
+                    .put(COLUMN_PR_UPDATED, isPrUpdated)
+                    .put(COLUMN_REPO_ID, rep.getId())
+                    .put(COLUMN_REPO_PUSH, isRepoPush)
+                    .put(COLUMN_TAG_CREATED, isTagCreated)
+                    .put(COLUMN_TITLE, title)
+                    .put(COLUMN_URL, url)
+                    .build());
+        } else {
+            webHookConfiguration.setBranchCreated(isBranchCreated);
+            webHookConfiguration.setBranchDeleted(isBranchDeleted);
+            webHookConfiguration.setEnabled(enabled);
+            webHookConfiguration.setPrCreated(isPrCreated);
+            webHookConfiguration.setPrDeclined(isPrDeclined);
+            webHookConfiguration.setPrMerged(isPrMerged);
+            webHookConfiguration.setPrReopened(isPrReopened);
+            webHookConfiguration.setPrRescoped(isPrRescoped);
+            webHookConfiguration.setPrUpdated(isPrUpdated);
+            webHookConfiguration.setRepoPush(isRepoPush);
+            webHookConfiguration.setTagCreated(isTagCreated);
+            webHookConfiguration.setTitle(title);
+            webHookConfiguration.setURL(url);
+            webHookConfiguration.save();
         }
-        webHookConfiguration.setTitle(title);
-        webHookConfiguration.setEnabled(enabled);
-        webHookConfiguration.setURL(url);
-        webHookConfiguration.setTagCreated(isTagCreated);
-        webHookConfiguration.setBranchDeleted(isBranchDeleted);
-        webHookConfiguration.setBranchCreated(isBranchCreated);
-        webHookConfiguration.setRepoPush(isRepoPush);
-        webHookConfiguration.setPrDeclined(isPrDeclined);
-        webHookConfiguration.setPrRescoped(isPrRescoped);
-        webHookConfiguration.setPrMerged(isPrMerged);
-        webHookConfiguration.setPrReopened(isPrReopened);
-        webHookConfiguration.setPrUpdated(isPrUpdated);
-        webHookConfiguration.setPrCreated(isPrCreated);
 
-        webHookConfiguration.save();
         return webHookConfiguration;
-
     }
 }

@@ -4,122 +4,132 @@ import net.java.ao.Accessor;
 import net.java.ao.Entity;
 import net.java.ao.Mutator;
 import net.java.ao.Preload;
-import net.java.ao.schema.Default;
-import net.java.ao.schema.NotNull;
-import net.java.ao.schema.StringLength;
-import net.java.ao.schema.Table;
+import net.java.ao.schema.*;
 
 @Table("WHConfig")
 @Preload
 public interface WebHookConfiguration extends Entity
 {
+	String COLUMN_BRANCH_CREATED = "BRANCH_CREATED";
+	String COLUMN_BRANCH_DELETED = "BRANCH_DELETED";
+	String COLUMN_ENABLED = "IS_ENABLED";
+	String COLUMN_REPO_ID = "REPO_ID";
+	String COLUMN_PR_CREATED = "PR_CREATED";
+	String COLUMN_PR_DECLINED = "PR_DECLINED";
+	String COLUMN_PR_MERGED = "PR_MERGED";
+	String COLUMN_PR_RESCOPED = "PR_RESCOPED";
+	String COLUMN_PR_REOPENED = "PR_REOPENED";
+	String COLUMN_PR_UPDATED = "PR_UPDATED";
+	String COLUMN_REPO_PUSH = "REPO_PUSH";
+	String COLUMN_TAG_CREATED = "TAG_CREATED";
+	String COLUMN_TITLE = "TITLE";
+	String COLUMN_URL = "URL";
+
+	@Accessor(COLUMN_TITLE)
 	@NotNull
-	@Accessor("TITLE")
 	String getTitle();
 
-	@Mutator("TITLE")
+	@Mutator(COLUMN_TITLE)
 	void setTitle(String title);
 
+	@Accessor(COLUMN_URL)
 	@NotNull
-	@Accessor("URL")
+	@StringLength(StringLength.UNLIMITED)
 	String getURL();
 
-	@Mutator("URL")
-	@StringLength(StringLength.UNLIMITED)
+	@Mutator(COLUMN_URL)
 	void setURL(String URL);
 
+	@Accessor(COLUMN_REPO_ID)
+	@Indexed
 	@NotNull
-	@Accessor("REPO_ID")
 	Integer getRepositoryId();
 
-	@Mutator("REPO_ID")
-	void setRepositoryId(Integer repoId);
-
-	@NotNull
+	@Accessor(COLUMN_ENABLED)
 	@Default("true")
-	@Accessor("IS_ENABLED")
+	@NotNull
 	boolean isEnabled();
 
-	@Mutator("IS_ENABLED")
+	@Mutator(COLUMN_ENABLED)
 	void setEnabled(boolean isEnabled);
 
 	@NotNull
 	@Default("true")
-	@Accessor("PR_CREATED")
+	@Accessor(COLUMN_PR_CREATED)
 	boolean isPrCreated();
 
-	@Mutator("PR_CREATED")
+	@Mutator(COLUMN_PR_CREATED)
 	void setPrCreated(boolean isPrCreated);
 
 	@NotNull
 	@Default("true")
-	@Accessor("PR_UPDATED")
+	@Accessor(COLUMN_PR_UPDATED)
 	boolean isPrUpdated();
 
-	@Mutator("PR_UPDATED")
+	@Mutator(COLUMN_PR_UPDATED)
 	void setPrUpdated(boolean isPrUpdated);
 
 	@NotNull
 	@Default("true")
-	@Accessor("PR_REOPENED")
+	@Accessor(COLUMN_PR_REOPENED)
 	boolean isPrReopened();
 
-	@Mutator("PR_REOPENED")
+	@Mutator(COLUMN_PR_REOPENED)
 	void setPrReopened(boolean isPrReopened);
 
 	@NotNull
 	@Default("true")
-	@Accessor("PR_MERGED")
+	@Accessor(COLUMN_PR_MERGED)
 	boolean isPrMerged();
 
-	@Mutator("PR_MERGED")
+	@Mutator(COLUMN_PR_MERGED)
 	void setPrMerged(boolean isPrMerged);
 
 	@NotNull
 	@Default("true")
-	@Accessor("PR_RESCOPED")
+	@Accessor(COLUMN_PR_RESCOPED)
 	boolean isPrRescoped();
 
-	@Mutator("PR_RESCOPED")
+	@Mutator(COLUMN_PR_RESCOPED)
 	void setPrRescoped(boolean isPrRescoped);
 
 	@NotNull
 	@Default("true")
-	@Accessor("PR_DECLINED")
+	@Accessor(COLUMN_PR_DECLINED)
 	boolean isPrDeclined();
 
-	@Mutator("PR_DECLINED")
+	@Mutator(COLUMN_PR_DECLINED)
 	void setPrDeclined(boolean isPrDeclined);
 
 	@NotNull
 	@Default("true")
-	@Accessor("REPO_PUSH")
+	@Accessor(COLUMN_REPO_PUSH)
 	boolean isRepoPush();
 
-	@Mutator("REPO_PUSH")
+	@Mutator(COLUMN_REPO_PUSH)
 	void setRepoPush(boolean isRepoPush);
 
 	@NotNull
 	@Default("true")
-	@Accessor("BRANCH_CREATED")
+	@Accessor(COLUMN_BRANCH_CREATED)
 	boolean isBranchCreated();
 
-	@Mutator("BRANCH_CREATED")
+	@Mutator(COLUMN_BRANCH_CREATED)
 	void setBranchCreated(boolean isBranchCreated);
 
 	@NotNull
 	@Default("true")
-	@Accessor("BRANCH_DELETED")
+	@Accessor(COLUMN_BRANCH_DELETED)
 	boolean isBranchDeleted();
 
-	@Mutator("BRANCH_DELETED")
+	@Mutator(COLUMN_BRANCH_DELETED)
 	void setBranchDeleted(boolean isBranchDeleted);
 
 	@NotNull
 	@Default("false")
-	@Accessor("TAG_CREATED")
+	@Accessor(COLUMN_TAG_CREATED)
 	boolean isTagCreated();
 
-	@Mutator("TAG_CREATED")
+	@Mutator(COLUMN_TAG_CREATED)
 	void setTagCreated(boolean isTagCreated);
 }
