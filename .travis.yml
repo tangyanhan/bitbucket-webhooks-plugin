@@ -2,7 +2,27 @@ language: java
 
 jdk:
   - oraclejdk8
+  
+sudo: required
+
+before_install:
+  # Install Atlassian SDK
+  - sudo sh -c 'echo "deb https://sdkrepo.atlassian.com/debian/ stable contrib" >>/etc/apt/sources.list'
+  - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B07804338C015B73
+  - sudo apt-get install apt-transport-https
+  - sudo apt-get update
+  - sudo apt-get install atlassian-plugin-sdk
+
+install:
+    - atlas-mvn -q org.apache.maven.plugins:maven-dependency-plugin:resolve-plugins
 
 script:
-  - mvn clean install -Dbitbucket.version=4.10.2
-  - mvn clean install -Dbitbucket.version=5.2.2
+  - atlas-clean
+  - atlas-mvn install -Dbitbucket.version=4.10.2
+  - atlas-mvn install -Dbitbucket.version=5.2.2
+
+cache:
+# Caching is not allowed for 'sudo: required' builds.
+# It is kept for future usage.
+  directories:
+    - $HOME/.m2
