@@ -14,12 +14,12 @@ before_install:
   - sudo apt-get install atlassian-plugin-sdk
 
 install:
-    - atlas-mvn -q org.apache.maven.plugins:maven-dependency-plugin:resolve-plugins
+    - atlas-mvn -q org.apache.maven.plugins:maven-dependency-plugin:resolve-plugins --batch-mode
 
 script:
   - atlas-clean
-  - atlas-mvn install -Dbitbucket.version=4.10.2
-  - atlas-mvn install -Dbitbucket.version=5.2.2
+  - atlas-mvn install --batch-mode -Dbitbucket.version=4.10.2
+  - atlas-mvn install --batch-mode -Dbitbucket.version=5.2.2
 
 cache:
 # Caching is not allowed for 'sudo: required' builds.
