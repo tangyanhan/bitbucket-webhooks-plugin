@@ -19,6 +19,7 @@ install:
 script:
   - atlas-clean
   - atlas-mvn install --batch-mode -Dbitbucket.version=4.10.2
+  - atlas-clean
   - atlas-mvn install --batch-mode -Dbitbucket.version=5.2.2
 
 cache:
