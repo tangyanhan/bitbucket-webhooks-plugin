@@ -4,6 +4,7 @@ import com.atlassian.bitbucket.event.branch.BranchCreatedEvent;
 import com.atlassian.bitbucket.event.branch.BranchDeletedEvent;
 import com.atlassian.bitbucket.event.pull.*;
 import com.atlassian.bitbucket.event.repository.RepositoryDeletionRequestedEvent;
+import com.atlassian.bitbucket.event.repository.RepositoryPushEvent;
 import com.atlassian.bitbucket.event.repository.RepositoryRefsChangedEvent;
 import com.atlassian.bitbucket.event.tag.TagCreatedEvent;
 import com.atlassian.bitbucket.nav.NavBuilder;
@@ -38,6 +39,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 
 @Component
@@ -252,6 +254,29 @@ public class PullRequestListener implements DisposableBean, InitializingBean
         for (WebHookConfiguration webHookConfiguration : webHookConfigurationDao.getEnabledWebHookConfigurations(repo, eventType))
         {
             post.setURI(URI.create(webHookConfiguration.getURL()));
+
+            if(event instanceof BitbucketPushEvent)
+            {
+                BitbucketPushEvent bitbucketPushEvent = (BitbucketPushEvent) event;
+                if (webHookConfiguration.getCommittersToIgnore() != null &&
+                        bitbucketPushEvent.getActor() != null)
+                {
+                    //Split by comma and remove whitspaces
+                    String[] committersToIgnore =  webHookConfiguration.getCommittersToIgnore().split("\\s?,\\s?");
+                    if(committersToIgnore.length > 0 &&
+                            Arrays.asList(committersToIgnore).contains(bitbucketPushEvent.getActor().getUsername())) {
+                        LOGGER.debug(
+                                "[repo: {}]| The push event by user {} is ignored because the username is listed as a commit to ignore: [{}({})-committersToIgnore:{}] \n{}",
+                                repo,
+                                bitbucketPushEvent.getActor().getUsername(),
+                                webHookConfiguration.getTitle(),
+                                webHookConfiguration.getURL(),
+                                webHookConfiguration.getCommittersToIgnore(),
+                                body);
+                        continue;
+                    }
+                }
+            }
 
             try (CloseableHttpResponse response = httpClient.execute(post))
             {

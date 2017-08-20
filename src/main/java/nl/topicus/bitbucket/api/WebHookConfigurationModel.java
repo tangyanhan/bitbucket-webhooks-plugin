@@ -14,12 +14,15 @@ public class WebHookConfigurationModel {
     @XmlElement
     private String url;
     @XmlElement
+    private String committersToIgnore;
+    @XmlElement
     private boolean enabled;
 
     WebHookConfigurationModel(WebHookConfiguration webHookConfiguration) {
         id = webHookConfiguration.getID();
         title = webHookConfiguration.getTitle();
         url = webHookConfiguration.getURL();
+        committersToIgnore = webHookConfiguration.getCommittersToIgnore();
         enabled = webHookConfiguration.isEnabled();
     }
 
@@ -50,6 +53,16 @@ public class WebHookConfigurationModel {
         this.url = url;
     }
 
+    public String getCommittersToIgnore()
+    {
+        return committersToIgnore;
+    }
+
+    public void setCommittersToIgnore(String committersToIgnore)
+    {
+        this.committersToIgnore = committersToIgnore;
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -63,6 +76,7 @@ public class WebHookConfigurationModel {
         return "WebHookConfigurationModel{" +
                 "title='" + title + '\'' +
                 ", url='" + url + '\'' +
+                ", committersToIgnore='" + committersToIgnore + '\'' +
                 ", enabled=" + enabled +
                 '}';
     }

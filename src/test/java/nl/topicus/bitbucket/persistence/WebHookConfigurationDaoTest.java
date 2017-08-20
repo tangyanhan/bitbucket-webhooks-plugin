@@ -33,11 +33,12 @@ public class WebHookConfigurationDaoTest extends AbstractAoDaoTest {
     @Test
     public void testCreateOrUpdateWebHookConfigurationForCreate() {
         WebHookConfiguration created = dao.createOrUpdateWebHookConfiguration(mockRepository(3),
-                null, "Bamboo", "https://example.com/bamboo/webhook", true);
+                null, "Bamboo", "https://example.com/bamboo/webhook", "bob", true);
         assertNotNull(created);
         assertEquals(Integer.valueOf(3), created.getRepositoryId());
         assertEquals("Bamboo", created.getTitle());
         assertEquals("https://example.com/bamboo/webhook", created.getURL());
+        assertEquals("bob", created.getCommittersToIgnore());
         assertTrue(created.isEnabled());
     }
 
@@ -50,11 +51,12 @@ public class WebHookConfigurationDaoTest extends AbstractAoDaoTest {
 
         WebHookConfiguration updated = dao.createOrUpdateWebHookConfiguration(
                 mockRepository(existing.getRepositoryId()), String.valueOf(existing.getID()),
-                "Updated", "https://example.com/updated/webhook", !existing.isEnabled());
+                "Updated", "https://example.com/updated/webhook", "bob", !existing.isEnabled());
         assertNotNull(updated);
         assertEquals(existing.getRepositoryId(), updated.getRepositoryId());
         assertEquals("Updated", updated.getTitle());
         assertEquals("https://example.com/updated/webhook", updated.getURL());
+        assertEquals("bob", updated.getCommittersToIgnore());
         assertEquals(!existing.isEnabled(), updated.isEnabled());
     }
 

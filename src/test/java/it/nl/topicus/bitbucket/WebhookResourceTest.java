@@ -18,6 +18,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
         JSONObject body = new JSONObject();
         body.put("title", "Test Hook");
         body.put("url", "https://example.com/webhook");
+        body.put("committersToIgnore", "bob");
         body.put("enabled", true);
 
         // Create
@@ -29,6 +30,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
                 .log().ifValidationFails()
                 .body("title", equalTo(body.get("title")))
                 .body("url", equalTo(body.get("url")))
+                .body("committersToIgnore", equalTo(body.get("committersToIgnore")))
                 .body("enabled", equalTo(true))
                 .when().put(getUrl(getProject1(), getProject1Repository1()))
                 .jsonPath()
@@ -44,6 +46,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
                     .body("[0].id", equalTo(webhookId))
                     .body("[0].title", equalTo(body.get("title")))
                     .body("[0].url", equalTo(body.get("url")))
+                    .body("[0].committersToIgnore", equalTo(body.get("committersToIgnore")))
                     .body("[0].enabled", equalTo(true))
                     .when().get(getUrl(getProject1(), getProject1Repository1()));
 
@@ -51,6 +54,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
             update.put("id", webhookId);
             update.put("title", "Updated Test");
             update.put("url", "http://example.com/webhook");
+            update.put("committersToIgnore", "bob");
             update.put("enabled", false);
 
             // Update
@@ -63,6 +67,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
                     .body("id", equalTo(webhookId))
                     .body("title", equalTo(update.get("title")))
                     .body("url", equalTo(update.get("url")))
+                    .body("committersToIgnore", equalTo(update.get("committersToIgnore")))
                     .body("enabled", equalTo(false))
                     .when().post(getUrl(getProject1(), getProject1Repository1()) + "/" + webhookId);
         } finally {

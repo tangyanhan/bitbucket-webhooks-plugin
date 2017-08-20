@@ -9,6 +9,7 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 {
 	private String title;
 	private String URL;
+	private String committersToIgnore;
 	private Integer repoId;
 	private boolean enabled;
 
@@ -23,7 +24,7 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 	private boolean isPrUpdated;
 	private boolean isPrCreated;
 
-	public DummyWebHookConfiguration(int repoId, String title, String url, boolean enabled, boolean isTagCreated,
+	public DummyWebHookConfiguration(int repoId, String title, String url, String committersToIgnore, boolean enabled, boolean isTagCreated,
 									 boolean isBranchDeleted, boolean isBranchCreated, boolean isRepoPush,
 									 boolean isPrDeclined, boolean isPrRescoped, boolean isPrMerged,
 									 boolean isPrReopened, boolean isPrUpdated, boolean isPrCreated)
@@ -31,6 +32,7 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 		this.repoId = repoId;
 		this.title = title;
 		this.URL = url;
+		this.committersToIgnore = committersToIgnore;
 		this.enabled = enabled;
 		this.isTagCreated = isTagCreated;
 		this.isBranchDeleted = isBranchDeleted;
@@ -66,6 +68,18 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 	public void setURL(String URL)
 	{
 		this.URL = URL;
+	}
+
+	@Override
+	public String getCommittersToIgnore()
+	{
+		return committersToIgnore;
+	}
+
+	@Override
+	public void setCommittersToIgnore(String committersToIgnore)
+	{
+		this.committersToIgnore = committersToIgnore;
 	}
 
 	@Override

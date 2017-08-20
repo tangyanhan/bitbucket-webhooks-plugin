@@ -6,7 +6,7 @@ import static java.util.Objects.requireNonNull;
 import static nl.topicus.bitbucket.persistence.WebHookConfiguration.*;
 
 public enum EventType {
-    
+
     PULL_REQUEST_CREATED("pullrequest:created", COLUMN_PR_CREATED),
     PULL_REQUEST_UPDATED("pullrequest:updated", COLUMN_PR_UPDATED),
     PULL_REQUEST_RESCOPED("pullrequest:updated", COLUMN_PR_RESCOPED),
