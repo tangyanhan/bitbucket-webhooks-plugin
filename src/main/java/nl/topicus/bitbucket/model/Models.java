@@ -1,5 +1,6 @@
 package nl.topicus.bitbucket.model;
 
+import com.atlassian.bitbucket.project.AbstractProjectVisitor;
 import com.atlassian.bitbucket.project.PersonalProject;
 import com.atlassian.bitbucket.project.Project;
 import com.atlassian.bitbucket.pull.PullRequest;
@@ -15,11 +16,9 @@ import nl.topicus.bitbucket.model.repository.BitbucketServerProject;
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepository;
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepositoryOwner;
 
+import javax.annotation.Nonnull;
 import java.net.URI;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public final class Models
 {
@@ -38,21 +37,25 @@ public final class Models
         URI baseUrl = appPropSvc.getBaseUrl();
         if (baseUrl != null)
         {
-            Map<String, List<BitbucketServerRepository.Link>> links = new HashMap<>();
-            if (repository.getProject() instanceof PersonalProject)
+            String url = repository.getProject().accept(new AbstractProjectVisitor<String>()
             {
-                PersonalProject pp = (PersonalProject) repository.getProject();
-                links.put("self", Collections.singletonList(new BitbucketServerRepository.Link(
-                        String.format("%s/users/%s/repos/%s/browse", baseUrl, pp.getOwner().getSlug(),
-                                      repository.getSlug()))));
-            }
-            else
-            {
-                links.put("self", Collections.singletonList(new BitbucketServerRepository.Link(
-                        String.format("%s/projects/%s/repos/%s/browse", baseUrl, repository.getProject().getKey(),
-                                      repository.getSlug()))));
-            }
-            repoType.setLinks(links);
+                @Override
+                public String visit(@Nonnull PersonalProject project)
+                {
+                    return String.format("%s/users/%s/repos/%s/browse", baseUrl,
+                            project.getOwner().getSlug(), repository.getSlug());
+                }
+
+                @Override
+                public String visit(@Nonnull Project project)
+                {
+                    return String.format("%s/projects/%s/repos/%s/browse", baseUrl,
+                            project.getKey(), repository.getSlug());
+                }
+            });
+
+            repoType.setLinks(Collections.singletonMap("self",
+                    Collections.singletonList(new BitbucketServerRepository.Link(url))));
         }
         return repoType;
     }
