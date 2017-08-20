@@ -102,7 +102,7 @@ public class PullRequestListener implements DisposableBean, InitializingBean
     @EventListener
     public void onPullRequestUpdated(PullRequestUpdatedEvent event)
     {
-        sendPullRequestEvent(event, EventType.PULL_REQUEST_REOPENED);
+        sendPullRequestEvent(event, EventType.PULL_REQUEST_UPDATED);
     }
 
     @EventListener
@@ -115,7 +115,7 @@ public class PullRequestListener implements DisposableBean, InitializingBean
             // If the PullRequest's from and to refs were not updated when it was reopend, trigger webhooks
             // for the update. Otherwise, if _either_ ref changed, a rescope event will also be raised. Let
             // that trigger webhooks instead, to ensure the pull request's refs are updated on disk
-            sendPullRequestEvent(event, EventType.PULL_REQUEST_UPDATED);
+            sendPullRequestEvent(event, EventType.PULL_REQUEST_REOPENED);
         }
     }
 
