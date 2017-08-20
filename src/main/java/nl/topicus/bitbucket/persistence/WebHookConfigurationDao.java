@@ -45,13 +45,13 @@ public class WebHookConfigurationDao {
         activeObjects.delete(webHookConfiguration);
     }
 
-    public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url,
+    public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url, String committersToIgnore,
                                                                    boolean enabled) {
-        return createOrUpdateWebHookConfiguration(rep, id, title, url, enabled,
+        return createOrUpdateWebHookConfiguration(rep, id, title, url, committersToIgnore, enabled,
                 false, true, true, true, true, true, true, true, true, true);
     }
 
-    public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url,
+    public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url, String committersToIgnore,
                                                                    boolean enabled, boolean isTagCreated, boolean isBranchDeleted,
                                                                    boolean isBranchCreated, boolean isRepoPush, boolean isPrDeclined,
                                                                    boolean isPrRescoped, boolean isPrMerged, boolean isPrReopened,
@@ -73,6 +73,7 @@ public class WebHookConfigurationDao {
                     .put(COLUMN_TAG_CREATED, isTagCreated)
                     .put(COLUMN_TITLE, title)
                     .put(COLUMN_URL, url)
+                    .put(COLUMN_IGNORED_COMMITERS, committersToIgnore)
                     .build());
         } else {
             webHookConfiguration.setBranchCreated(isBranchCreated);
@@ -88,6 +89,7 @@ public class WebHookConfigurationDao {
             webHookConfiguration.setTagCreated(isTagCreated);
             webHookConfiguration.setTitle(title);
             webHookConfiguration.setURL(url);
+            webHookConfiguration.setCommittersToIgnore(committersToIgnore);
             webHookConfiguration.save();
         }
 

@@ -24,6 +24,7 @@ public interface WebHookConfiguration extends Entity
 	String COLUMN_TAG_CREATED = "TAG_CREATED";
 	String COLUMN_TITLE = "TITLE";
 	String COLUMN_URL = "URL";
+	String COLUMN_IGNORED_COMMITERS = "COMMITTERS_TO_IGNORE";
 
 	@Accessor(COLUMN_TITLE)
 	@NotNull
@@ -39,6 +40,13 @@ public interface WebHookConfiguration extends Entity
 
 	@Mutator(COLUMN_URL)
 	void setURL(String URL);
+
+	@Accessor(COLUMN_IGNORED_COMMITERS)
+	@StringLength(StringLength.UNLIMITED)
+	String getCommittersToIgnore();
+
+	@Mutator(COLUMN_IGNORED_COMMITERS)
+	void setCommittersToIgnore(String committersToIgnore);
 
 	@Accessor(COLUMN_REPO_ID)
 	@Indexed
