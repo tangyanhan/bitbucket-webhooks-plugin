@@ -17,7 +17,7 @@ install:
   - atlas-mvn -q org.apache.maven.plugins:maven-dependency-plugin:resolve-plugins --batch-mode
 
 script:
-  - atlas-mvn -q clean install --batch-mode -Dbitbucket.test.version=$BITBUCKET_TEST_VERSION
+  - atlas-mvn clean install --batch-mode -Dbitbucket.test.version=$BITBUCKET_TEST_VERSION
 
 env:
   matrix:
