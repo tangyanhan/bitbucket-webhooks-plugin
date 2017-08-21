@@ -20,7 +20,7 @@
             <dependency>
                 <groupId>com.atlassian.bitbucket.server</groupId>
                 <artifactId>bitbucket-parent</artifactId>
-                <version>${bitbucket.version}</version>
+                <version>${bitbucket.api.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -172,8 +172,8 @@
                         <product>
                             <id>bitbucket</id>
                             <instanceId>bitbucket</instanceId>
-                            <version>${bitbucket.version}</version>
-                            <dataVersion>${bitbucket.data.version}</dataVersion>
+                            <version>${bitbucket.test.version}</version>
+                            <dataVersion>${bitbucket.test.version}</dataVersion>
                         </product>
                     </products>
                     <instructions>
@@ -323,8 +323,8 @@
         <!-- This key is used to keep the consistency between the key in atlassian-plugin.xml and the key to generate bundle. -->
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
         <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
-        <bitbucket.version>4.6.4</bitbucket.version>
-        <bitbucket.data.version>${bitbucket.version}</bitbucket.data.version>
+        <bitbucket.api.version>4.10.2</bitbucket.api.version>
+        <bitbucket.test.version>${bitbucket.api.version}</bitbucket.test.version>
     </properties>
 
     <licenses>
