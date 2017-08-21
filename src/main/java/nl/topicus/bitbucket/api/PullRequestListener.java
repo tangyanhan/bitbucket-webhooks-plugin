@@ -1,5 +1,6 @@
 package nl.topicus.bitbucket.api;
 
+import com.atlassian.bitbucket.ServiceException;
 import com.atlassian.bitbucket.event.branch.BranchCreatedEvent;
 import com.atlassian.bitbucket.event.branch.BranchDeletedEvent;
 import com.atlassian.bitbucket.event.pull.*;
@@ -8,11 +9,13 @@ import com.atlassian.bitbucket.event.repository.RepositoryPushEvent;
 import com.atlassian.bitbucket.event.repository.RepositoryRefsChangedEvent;
 import com.atlassian.bitbucket.event.tag.TagCreatedEvent;
 import com.atlassian.bitbucket.nav.NavBuilder;
-import com.atlassian.bitbucket.pull.IllegalPullRequestStateException;
 import com.atlassian.bitbucket.pull.PullRequest;
-import com.atlassian.bitbucket.pull.PullRequestService;
 import com.atlassian.bitbucket.repository.Repository;
+import com.atlassian.bitbucket.scm.Command;
+import com.atlassian.bitbucket.scm.ScmService;
+import com.atlassian.bitbucket.scm.pull.ScmPullRequestCommandFactory;
 import com.atlassian.bitbucket.server.ApplicationPropertiesService;
+import com.atlassian.bitbucket.util.Version;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -52,8 +55,9 @@ public class PullRequestListener implements DisposableBean, InitializingBean
     private final ExecutorService executorService;
     private final CloseableHttpClient httpClient;
     private final NavBuilder navBuilder;
-    private final PullRequestService pullRequestService;
+    private final ScmService scmService;
     private final WebHookConfigurationDao webHookConfigurationDao;
+    private final boolean useCanMerge;
 
     @Autowired
     public PullRequestListener(@ComponentImport ApplicationPropertiesService applicationPropertiesService,
@@ -61,16 +65,16 @@ public class PullRequestListener implements DisposableBean, InitializingBean
                                @ComponentImport ExecutorService executorService,
                                HttpClientFactory httpClientFactory,
                                @ComponentImport NavBuilder navBuilder,
-                               @ComponentImport PullRequestService pullRequestService,
+                               @ComponentImport ScmService scmService,
                                WebHookConfigurationDao webHookConfigurationDao)
     {
         this.applicationPropertiesService = applicationPropertiesService;
         this.eventPublisher = eventPublisher;
         this.executorService = executorService;
         this.navBuilder = navBuilder;
-        this.pullRequestService = pullRequestService;
+        this.scmService = scmService;
         this.webHookConfigurationDao = webHookConfigurationDao;
-
+        useCanMerge = new Version(applicationPropertiesService.getBuildVersion()).compareTo(new Version(4, 10)) < 0;
         httpClient = httpClientFactory.create();
     }
 
@@ -209,13 +213,25 @@ public class PullRequestListener implements DisposableBean, InitializingBean
             {
                 try
                 {
-                    pullRequestService.canMerge(pullRequest.getToRef().getRepository().getId(), pullRequest.getId());
+                    ScmPullRequestCommandFactory pullRequestCommandFactory = scmService.getPullRequestCommandFactory(pullRequest);
+                    Command<?> command;
+                    if (useCanMerge)
+                    {
+                        /*
+                        This is to support version from 4.5.x - 4.9.x
+                        Once we only support from 4.10.x and beyond we can remove this.
+                         */
+                        command = pullRequestCommandFactory.canMerge();
+                    }
+                    else
+                    {
+                        command = pullRequestCommandFactory.tryMerge(pullRequest);
+                    }
+                    command.call();
                 }
-                catch (IllegalPullRequestStateException e)
+                catch (ServiceException e)
                 {
-                    // Logging "e.getMessage()" rather than "e" here is intentional. We don't want to spam
-                    // the full stack trace in the logs; it doesn't add anything here.
-                    LOGGER.debug("{}: {}", pullRequest, e.getMessage());
+                    LOGGER.warn("{}: Mergeability check failed; pull request refs may not be up-to-date", pullRequest, e);
                 }
             }
 
