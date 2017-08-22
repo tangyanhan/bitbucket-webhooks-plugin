@@ -374,9 +374,9 @@
     </pluginRepositories>
 
     <scm>
-        <connection>scm:git:git@github.com:topicusfinan/bitbucket-webhooks-plugin.git</connection>
-        <url>scm:git:git@github.com:topicusfinan/bitbucket-webhooks-plugin.git</url>
-        <developerConnection>scm:git:git@github.com:topicusfinan/bitbucket-webhooks-plugin.git</developerConnection>
+        <connection>scm:git:git@github.com:Eernie/bitbucket-webhooks-plugin.git</connection>
+        <url>scm:git:git@github.com:Eernie/bitbucket-webhooks-plugin.git</url>
+        <developerConnection>scm:git:git@github.com:Eernie/bitbucket-webhooks-plugin.git</developerConnection>
         <tag>HEAD</tag>
   </scm>
 
