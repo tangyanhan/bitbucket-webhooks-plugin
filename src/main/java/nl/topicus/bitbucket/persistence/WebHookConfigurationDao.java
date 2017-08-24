@@ -48,14 +48,17 @@ public class WebHookConfigurationDao {
     public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url, String committersToIgnore,
                                                                    boolean enabled) {
         return createOrUpdateWebHookConfiguration(rep, id, title, url, committersToIgnore, enabled,
-                false, true, true, true, true, true, true, true, true, true);
+                false, true, true, true, true,
+                true, true, true, true, true,
+                false, false
+        );
     }
 
     public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url, String committersToIgnore,
                                                                    boolean enabled, boolean isTagCreated, boolean isBranchDeleted,
                                                                    boolean isBranchCreated, boolean isRepoPush, boolean isPrDeclined,
                                                                    boolean isPrRescoped, boolean isPrMerged, boolean isPrReopened,
-                                                                   boolean isPrUpdated, boolean isPrCreated) {
+                                                                   boolean isPrUpdated, boolean isPrCreated, boolean isPrCommented, boolean isBuildStatus) {
         WebHookConfiguration webHookConfiguration = id == null ? null : getWebHookConfiguration(id);
         if (webHookConfiguration == null || !webHookConfiguration.getRepositoryId().equals(rep.getId())) {
             webHookConfiguration = activeObjects.create(WebHookConfiguration.class, ImmutableMap.<String, Object>builder()
@@ -68,12 +71,14 @@ public class WebHookConfigurationDao {
                     .put(COLUMN_PR_REOPENED, isPrReopened)
                     .put(COLUMN_PR_RESCOPED, isPrRescoped)
                     .put(COLUMN_PR_UPDATED, isPrUpdated)
+                    .put(COLUMN_PR_COMMENTED, isPrCommented)
                     .put(COLUMN_REPO_ID, rep.getId())
                     .put(COLUMN_REPO_PUSH, isRepoPush)
                     .put(COLUMN_TAG_CREATED, isTagCreated)
                     .put(COLUMN_TITLE, title)
                     .put(COLUMN_URL, url)
                     .put(COLUMN_IGNORED_COMMITERS, committersToIgnore)
+                    .put(COLUMN_BUILD_STATUS, isBuildStatus)
                     .build());
         } else {
             webHookConfiguration.setBranchCreated(isBranchCreated);
@@ -85,11 +90,13 @@ public class WebHookConfigurationDao {
             webHookConfiguration.setPrReopened(isPrReopened);
             webHookConfiguration.setPrRescoped(isPrRescoped);
             webHookConfiguration.setPrUpdated(isPrUpdated);
+            webHookConfiguration.setPrCommented(isPrCommented);
             webHookConfiguration.setRepoPush(isRepoPush);
             webHookConfiguration.setTagCreated(isTagCreated);
             webHookConfiguration.setTitle(title);
             webHookConfiguration.setURL(url);
             webHookConfiguration.setCommittersToIgnore(committersToIgnore);
+            webHookConfiguration.setBuildStatus(isBuildStatus);
             webHookConfiguration.save();
         }
 

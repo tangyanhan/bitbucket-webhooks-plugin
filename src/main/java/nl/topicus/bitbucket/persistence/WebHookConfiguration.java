@@ -20,11 +20,13 @@ public interface WebHookConfiguration extends Entity
 	String COLUMN_PR_RESCOPED = "PR_RESCOPED";
 	String COLUMN_PR_REOPENED = "PR_REOPENED";
 	String COLUMN_PR_UPDATED = "PR_UPDATED";
+	String COLUMN_PR_COMMENTED = "PR_COMMENTED";
 	String COLUMN_REPO_PUSH = "REPO_PUSH";
 	String COLUMN_TAG_CREATED = "TAG_CREATED";
 	String COLUMN_TITLE = "TITLE";
 	String COLUMN_URL = "URL";
 	String COLUMN_IGNORED_COMMITERS = "COMMITTERS_TO_IGNORE";
+	String COLUMN_BUILD_STATUS = "BUILD_STATUS";
 
 	@Accessor(COLUMN_TITLE)
 	@NotNull
@@ -110,6 +112,14 @@ public interface WebHookConfiguration extends Entity
 	void setPrDeclined(boolean isPrDeclined);
 
 	@NotNull
+	@Default("false")
+	@Accessor(COLUMN_PR_COMMENTED)
+	boolean isPrCommented();
+
+	@Mutator(COLUMN_PR_COMMENTED)
+	void setPrCommented(boolean prCommented);
+
+	@NotNull
 	@Default("true")
 	@Accessor(COLUMN_REPO_PUSH)
 	boolean isRepoPush();
@@ -140,4 +150,12 @@ public interface WebHookConfiguration extends Entity
 
 	@Mutator(COLUMN_TAG_CREATED)
 	void setTagCreated(boolean isTagCreated);
+
+	@NotNull
+	@Default("false")
+	@Accessor(COLUMN_BUILD_STATUS)
+	boolean isBuildStatus();
+
+	@Mutator(COLUMN_BUILD_STATUS)
+	void setBuildStatus(boolean isBuildStatus);
 }

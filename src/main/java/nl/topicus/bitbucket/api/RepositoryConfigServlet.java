@@ -150,13 +150,18 @@ public class RepositoryConfigServlet extends HttpServlet
 		boolean isPrReopened = "on".equalsIgnoreCase(req.getParameter("isPrReopened"));
 		boolean isPrUpdated = "on".equalsIgnoreCase(req.getParameter("isPrUpdated"));
 		boolean isPrCreated = "on".equalsIgnoreCase(req.getParameter("isPrCreated"));
+		boolean isPrCommented = "on".equalsIgnoreCase(req.getParameter("isPrCommented"));
+		boolean isBuildStatus = "on".equalsIgnoreCase(req.getParameter("isBuildStatus"));
 
-		WebHookConfiguration webHookConfiguration = webHookConfigurationDao.createOrUpdateWebHookConfiguration(repository, id, title, url, committersToIgnore, enabled, isTagCreated, isBranchDeleted, isBranchCreated, isRepoPush, isPrDeclined, isPrRescoped, isPrMerged, isPrReopened, isPrUpdated, isPrCreated);
+		WebHookConfiguration webHookConfiguration = webHookConfigurationDao
+				.createOrUpdateWebHookConfiguration(repository, id, title, url, committersToIgnore, enabled,
+						isTagCreated, isBranchDeleted, isBranchCreated, isRepoPush, isPrDeclined, isPrRescoped,
+						isPrMerged, isPrReopened, isPrUpdated, isPrCreated, isPrCommented, isBuildStatus);
 		if (webHookConfiguration == null)
 		{
 			webHookConfiguration = new DummyWebHookConfiguration(repository.getId(), title, url, committersToIgnore, enabled,
 					isTagCreated, isBranchDeleted, isBranchCreated, isRepoPush, isPrDeclined, isPrRescoped,
-					isPrMerged, isPrReopened, isPrUpdated, isPrCreated);
+					isPrMerged, isPrReopened, isPrUpdated, isPrCreated, isPrCommented, isBuildStatus);
 			String template = "nl.topicus.templates.edit";
 			render(resp, template, ImmutableMap.<String, Object>builder().put("repository", repository).put("configuration", webHookConfiguration).build());
 		}

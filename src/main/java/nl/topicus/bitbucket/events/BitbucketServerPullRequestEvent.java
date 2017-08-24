@@ -27,8 +27,10 @@ import nl.topicus.bitbucket.model.pullrequest.BitbucketServerPullRequest;
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepository;
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepositoryOwner;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 public class BitbucketServerPullRequestEvent
 {
     private BitbucketServerRepositoryOwner actor;
@@ -36,6 +38,8 @@ public class BitbucketServerPullRequestEvent
     private BitbucketServerPullRequest pullrequest;
 
     private BitbucketServerRepository repository;
+
+    private String comment;
 
     public BitbucketServerRepositoryOwner getActor()
     {
@@ -65,6 +69,14 @@ public class BitbucketServerPullRequestEvent
     public void setRepository(BitbucketServerRepository repository)
     {
         this.repository = repository;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getComment() {
+        return comment;
     }
 
 }

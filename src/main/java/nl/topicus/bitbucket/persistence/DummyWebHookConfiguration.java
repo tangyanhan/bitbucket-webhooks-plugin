@@ -23,11 +23,14 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 	private boolean isPrReopened;
 	private boolean isPrUpdated;
 	private boolean isPrCreated;
+	private boolean isPrCommented;
+	private boolean isBuildStatus;
 
 	public DummyWebHookConfiguration(int repoId, String title, String url, String committersToIgnore, boolean enabled, boolean isTagCreated,
 									 boolean isBranchDeleted, boolean isBranchCreated, boolean isRepoPush,
 									 boolean isPrDeclined, boolean isPrRescoped, boolean isPrMerged,
-									 boolean isPrReopened, boolean isPrUpdated, boolean isPrCreated)
+									 boolean isPrReopened, boolean isPrUpdated, boolean isPrCreated,
+									 boolean isPrCommented, boolean isBuildStatus)
 	{
 		this.repoId = repoId;
 		this.title = title;
@@ -44,6 +47,8 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 		this.isPrReopened = isPrReopened;
 		this.isPrUpdated = isPrUpdated;
 		this.isPrCreated = isPrCreated;
+		this.isPrCommented = isPrCommented;
+		this.isBuildStatus = isBuildStatus;
 	}
 
 	@Override
@@ -113,6 +118,16 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 	}
 
 	@Override
+	public boolean isBuildStatus() {
+		return isBuildStatus;
+	}
+
+	@Override
+	public void setBuildStatus(boolean buildStatus) {
+		isBuildStatus = buildStatus;
+	}
+
+	@Override
 	public boolean isBranchDeleted()
 	{
 		return isBranchDeleted;
@@ -158,6 +173,16 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 	public void setPrDeclined(boolean prDeclined)
 	{
 		isPrDeclined = prDeclined;
+	}
+
+	@Override
+	public boolean isPrCommented() {
+		return isPrCommented;
+	}
+
+	@Override
+	public void setPrCommented(boolean prCommented) {
+		isPrCommented = prCommented;
 	}
 
 	@Override

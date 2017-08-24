@@ -3,13 +3,16 @@ package nl.topicus.bitbucket.api;
 import com.atlassian.bitbucket.ServiceException;
 import com.atlassian.bitbucket.event.branch.BranchCreatedEvent;
 import com.atlassian.bitbucket.event.branch.BranchDeletedEvent;
+import com.atlassian.bitbucket.build.BuildStatusSetEvent;
 import com.atlassian.bitbucket.event.pull.*;
 import com.atlassian.bitbucket.event.repository.RepositoryDeletionRequestedEvent;
-import com.atlassian.bitbucket.event.repository.RepositoryPushEvent;
 import com.atlassian.bitbucket.event.repository.RepositoryRefsChangedEvent;
 import com.atlassian.bitbucket.event.tag.TagCreatedEvent;
+import com.atlassian.bitbucket.idx.CommitIndex;
+import com.atlassian.bitbucket.idx.IndexedCommit;
 import com.atlassian.bitbucket.nav.NavBuilder;
 import com.atlassian.bitbucket.pull.PullRequest;
+import com.atlassian.bitbucket.pull.PullRequestService;
 import com.atlassian.bitbucket.repository.Repository;
 import com.atlassian.bitbucket.scm.Command;
 import com.atlassian.bitbucket.scm.ScmService;
@@ -19,10 +22,8 @@ import com.atlassian.bitbucket.util.Version;
 import com.atlassian.event.api.EventListener;
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import nl.topicus.bitbucket.events.BitbucketPushEvent;
-import nl.topicus.bitbucket.events.BitbucketServerPullRequestEvent;
-import nl.topicus.bitbucket.events.EventType;
-import nl.topicus.bitbucket.events.Events;
+import nl.topicus.bitbucket.events.*;
+import nl.topicus.bitbucket.model.Models;
 import nl.topicus.bitbucket.persistence.WebHookConfiguration;
 import nl.topicus.bitbucket.persistence.WebHookConfigurationDao;
 import org.apache.http.Header;
@@ -56,6 +57,7 @@ public class PullRequestListener implements DisposableBean, InitializingBean
     private final CloseableHttpClient httpClient;
     private final NavBuilder navBuilder;
     private final ScmService scmService;
+    private final CommitIndex commitIndex;
     private final WebHookConfigurationDao webHookConfigurationDao;
     private final boolean useCanMerge;
 
@@ -66,6 +68,7 @@ public class PullRequestListener implements DisposableBean, InitializingBean
                                HttpClientFactory httpClientFactory,
                                @ComponentImport NavBuilder navBuilder,
                                @ComponentImport ScmService scmService,
+                               @ComponentImport CommitIndex commitIndex,
                                WebHookConfigurationDao webHookConfigurationDao)
     {
         this.applicationPropertiesService = applicationPropertiesService;
@@ -73,6 +76,7 @@ public class PullRequestListener implements DisposableBean, InitializingBean
         this.executorService = executorService;
         this.navBuilder = navBuilder;
         this.scmService = scmService;
+        this.commitIndex = commitIndex;
         this.webHookConfigurationDao = webHookConfigurationDao;
         useCanMerge = new Version(applicationPropertiesService.getBuildVersion()).compareTo(new Version(4, 10)) < 0;
         httpClient = httpClientFactory.create();
@@ -139,6 +143,12 @@ public class PullRequestListener implements DisposableBean, InitializingBean
     }
 
     @EventListener
+    public void onPullRequestCommentEvent(PullRequestCommentEvent event) throws IOException
+    {
+        sendPullRequestEvent(event, EventType.PULL_REQUEST_COMMENT);
+    }
+
+    @EventListener
     public void onPullRequestMerged(PullRequestMergedEvent event)
     {
         // Note that onRepositoryRefsChanged is _also_ called for this same event. It triggers a different
@@ -180,6 +190,24 @@ public class PullRequestListener implements DisposableBean, InitializingBean
         executorService.submit(() -> {
             BitbucketPushEvent pushEvent = Events.createPushEvent(event, applicationPropertiesService);
             sendEvents(pushEvent, event.getRepository(), chooseRefsChangedEvent(event));
+        });
+    }
+
+    @EventListener
+    public void onBuildStatusSetEvent(BuildStatusSetEvent event) throws IOException
+    {
+        executorService.submit(() -> {
+            BuildStatusEvent buildStatusEvent = new BuildStatusEvent();
+            buildStatusEvent.setCommit(event.getCommitId());
+            buildStatusEvent.setStatus(event.getBuildStatus().getState().toString());
+            buildStatusEvent.setUrl(event.getBuildStatus().getUrl());
+            IndexedCommit commit = commitIndex.getCommit(event.getCommitId());
+            if (commit != null) {
+                for (Repository repo : commit.getRepositories()){
+                    buildStatusEvent.setRepository(Models.createRepository(repo, applicationPropertiesService));
+                    sendEvents(buildStatusEvent, repo, EventType.BUILD_STATUS);
+                }
+            }
         });
     }
 
