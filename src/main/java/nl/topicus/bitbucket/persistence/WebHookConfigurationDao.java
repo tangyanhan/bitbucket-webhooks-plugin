@@ -60,6 +60,7 @@ public class WebHookConfigurationDao {
                                                                    boolean isPrRescoped, boolean isPrMerged, boolean isPrReopened,
                                                                    boolean isPrUpdated, boolean isPrCreated, boolean isPrCommented, boolean isBuildStatus) {
         WebHookConfiguration webHookConfiguration = id == null ? null : getWebHookConfiguration(id);
+        committersToIgnore = committersToIgnore == null ? "" : committersToIgnore;
         if (webHookConfiguration == null || !webHookConfiguration.getRepositoryId().equals(rep.getId())) {
             webHookConfiguration = activeObjects.create(WebHookConfiguration.class, ImmutableMap.<String, Object>builder()
                     .put(COLUMN_BRANCH_CREATED, isBranchCreated)

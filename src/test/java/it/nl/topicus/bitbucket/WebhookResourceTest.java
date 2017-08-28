@@ -79,6 +79,70 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
         }
     }
 
+    @Test // https://github.com/Eernie/bitbucket-webhooks-plugin/issues/65
+    public void testCommitersToIgnoreNull() {
+        JSONObject body = new JSONObject();
+        body.put("title", "Test Hook");
+        body.put("url", "https://example.com/webhook");
+        body.put("enabled", true);
+
+        // Create
+        int webhookId = RestAssured.given()
+                .auth().preemptive().basic(getAdminUser(), getAdminPassword())
+                .body(body)
+                .contentType(ContentType.JSON)
+                .expect().statusCode(200)
+                .log().ifValidationFails()
+                .body("title", equalTo(body.get("title")))
+                .body("url", equalTo(body.get("url")))
+                .body("committersToIgnore", equalTo(""))
+                .body("enabled", equalTo(true))
+                .when().put(getUrl(getProject1(), getProject1Repository1()))
+                .jsonPath()
+                .getInt("id");
+
+        try {
+            // Read
+            RestAssured.given()
+                    .auth().preemptive().basic(getAdminUser(), getAdminPassword())
+                    .expect().statusCode(200)
+                    .log().ifValidationFails()
+                    .body("size()", equalTo(1))
+                    .body("[0].id", equalTo(webhookId))
+                    .body("[0].title", equalTo(body.get("title")))
+                    .body("[0].url", equalTo(body.get("url")))
+                    .body("[0].committersToIgnore", equalTo(""))
+                    .body("[0].enabled", equalTo(true))
+                    .when().get(getUrl(getProject1(), getProject1Repository1()));
+
+            JSONObject update = new JSONObject();
+            update.put("id", webhookId);
+            update.put("title", "Updated Test");
+            update.put("url", "http://example.com/webhook");
+            update.put("enabled", false);
+
+            // Update
+            RestAssured.given()
+                    .auth().preemptive().basic(getAdminUser(), getAdminPassword())
+                    .body(update)
+                    .contentType(ContentType.JSON)
+                    .expect().statusCode(200)
+                    .log().ifValidationFails()
+                    .body("id", equalTo(webhookId))
+                    .body("title", equalTo(update.get("title")))
+                    .body("url", equalTo(update.get("url")))
+                    .body("committersToIgnore", equalTo(""))
+                    .body("enabled", equalTo(false))
+                    .when().post(getUrl(getProject1(), getProject1Repository1()) + "/" + webhookId);
+        } finally {
+            RestAssured.given()
+                    .auth().preemptive().basic(getAdminUser(), getAdminPassword())
+                    .expect().statusCode(204)
+                    .log().ifValidationFails()
+                    .when().delete(getUrl(getProject1(), getProject1Repository1()) + "/" + webhookId);
+        }
+    }
+
     @Test
     public void testGetWebhooksForNonexistentProject() {
         RestAssured.given()
