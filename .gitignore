@@ -9,3 +9,7 @@ work
 *.iml
 *.iws
 *.ipr
+
+# Maven relase plugin
+pom\.xml\.releaseBackup
+release\.properties
