@@ -10,6 +10,7 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 	private String title;
 	private String URL;
 	private String committersToIgnore;
+	private String branchesToIgnore;
 	private Integer repoId;
 	private boolean enabled;
 
@@ -26,7 +27,8 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 	private boolean isPrCommented;
 	private boolean isBuildStatus;
 
-	public DummyWebHookConfiguration(int repoId, String title, String url, String committersToIgnore, boolean enabled, boolean isTagCreated,
+	public DummyWebHookConfiguration(int repoId, String title, String url, String committersToIgnore,
+									 String branchesToIgnore, boolean enabled, boolean isTagCreated,
 									 boolean isBranchDeleted, boolean isBranchCreated, boolean isRepoPush,
 									 boolean isPrDeclined, boolean isPrRescoped, boolean isPrMerged,
 									 boolean isPrReopened, boolean isPrUpdated, boolean isPrCreated,
@@ -36,6 +38,7 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 		this.title = title;
 		this.URL = url;
 		this.committersToIgnore = committersToIgnore;
+		this.branchesToIgnore = branchesToIgnore;
 		this.enabled = enabled;
 		this.isTagCreated = isTagCreated;
 		this.isBranchDeleted = isBranchDeleted;
@@ -85,6 +88,18 @@ public class DummyWebHookConfiguration implements WebHookConfiguration
 	public void setCommittersToIgnore(String committersToIgnore)
 	{
 		this.committersToIgnore = committersToIgnore;
+	}
+
+	@Override
+	public String getBranchesToIgnore()
+	{
+		return branchesToIgnore;
+	}
+
+	@Override
+	public void setBranchesToIgnore(String branchesToIgnore)
+	{
+		this.branchesToIgnore = branchesToIgnore;
 	}
 
 	@Override

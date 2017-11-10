@@ -45,9 +45,9 @@ public class WebHookConfigurationDao {
         activeObjects.delete(webHookConfiguration);
     }
 
-    public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url, String committersToIgnore,
-                                                                   boolean enabled) {
-        return createOrUpdateWebHookConfiguration(rep, id, title, url, committersToIgnore, enabled,
+    public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url,
+                                                                   String committersToIgnore, String branchesToIgnore, boolean enabled) {
+        return createOrUpdateWebHookConfiguration(rep, id, title, url, committersToIgnore, branchesToIgnore, enabled,
                 false, true, true, true, true,
                 true, true, true, true, true,
                 false, false
@@ -55,12 +55,14 @@ public class WebHookConfigurationDao {
     }
 
     public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url, String committersToIgnore,
-                                                                   boolean enabled, boolean isTagCreated, boolean isBranchDeleted,
-                                                                   boolean isBranchCreated, boolean isRepoPush, boolean isPrDeclined,
-                                                                   boolean isPrRescoped, boolean isPrMerged, boolean isPrReopened,
-                                                                   boolean isPrUpdated, boolean isPrCreated, boolean isPrCommented, boolean isBuildStatus) {
+                                                                   String branchesToIgnore, boolean enabled, boolean isTagCreated,
+                                                                   boolean isBranchDeleted, boolean isBranchCreated, boolean isRepoPush,
+                                                                   boolean isPrDeclined, boolean isPrRescoped, boolean isPrMerged,
+                                                                   boolean isPrReopened, boolean isPrUpdated, boolean isPrCreated,
+                                                                   boolean isPrCommented, boolean isBuildStatus) {
         WebHookConfiguration webHookConfiguration = id == null ? null : getWebHookConfiguration(id);
         committersToIgnore = committersToIgnore == null ? "" : committersToIgnore;
+        branchesToIgnore = branchesToIgnore == null ? "" : branchesToIgnore;
         if (webHookConfiguration == null || !webHookConfiguration.getRepositoryId().equals(rep.getId())) {
             webHookConfiguration = activeObjects.create(WebHookConfiguration.class, ImmutableMap.<String, Object>builder()
                     .put(COLUMN_BRANCH_CREATED, isBranchCreated)
@@ -79,6 +81,7 @@ public class WebHookConfigurationDao {
                     .put(COLUMN_TITLE, title)
                     .put(COLUMN_URL, url)
                     .put(COLUMN_IGNORED_COMMITERS, committersToIgnore)
+                    .put(COLUMN_IGNORED_BRANCHES, branchesToIgnore)
                     .put(COLUMN_BUILD_STATUS, isBuildStatus)
                     .build());
         } else {
@@ -97,6 +100,7 @@ public class WebHookConfigurationDao {
             webHookConfiguration.setTitle(title);
             webHookConfiguration.setURL(url);
             webHookConfiguration.setCommittersToIgnore(committersToIgnore);
+            webHookConfiguration.setBranchesToIgnore(branchesToIgnore);
             webHookConfiguration.setBuildStatus(isBuildStatus);
             webHookConfiguration.save();
         }

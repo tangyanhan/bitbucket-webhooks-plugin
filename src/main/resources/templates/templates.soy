@@ -41,6 +41,7 @@
                 <th id="title">Title</th>
                 <th id="url">URL</th>
                 <th id="committersToIgnore">Committers to Ignore</th>
+                <th id="branchesToIgnore">Branches to Ignore</th>
                 <th id="action">Actions</th>
             </tr>
             </thead>
@@ -54,6 +55,7 @@
                     </td>
                     <td headers="url">{$configuration.URL}</td>
                     <td headers="committersToIgnore">{if $configuration.committersToIgnore}{$configuration.committersToIgnore}{/if}</td>
+                    <td headers="branchesToIgnore">{if $configuration.branchesToIgnore}{$configuration.branchesToIgnore}{/if}</td>
                     <td class="action" headers="action">
                         <ul class="menu">
                             <li>
@@ -129,6 +131,13 @@
                  {param labelContent: 'Committers to ignore' /}
                  {param descriptionText: 'Comma separated list of usernames. Commits from these users do not trigger this hook. Example: john.doe,jane.doe' /}
                  {param value:  $configuration ? $configuration.committersToIgnore : '' /}
+               {/call}
+               {call aui.form.textField}
+                 {param id: 'branchesToIgnore' /}
+                 {param legendContent: 'Branches to ignore' /}
+                 {param labelContent: 'Branches to ignore' /}
+                 {param descriptionText: 'regex for branches. Commits on these branches do not trigger this hook. Example: release/.*' /}
+                 {param value:  $configuration ? $configuration.branchesToIgnore : '' /}
                {/call}
                {call aui.form.checkboxField}
                  {param legendContent: 'Status' /}

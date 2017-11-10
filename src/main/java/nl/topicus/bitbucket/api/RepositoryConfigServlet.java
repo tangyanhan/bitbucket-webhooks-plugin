@@ -137,6 +137,7 @@ public class RepositoryConfigServlet extends HttpServlet
 		String title = req.getParameter("title");
 		String url = req.getParameter("url");
 		String committersToIgnore = req.getParameter("committersToIgnore") ;
+		String branchesToIgnore = req.getParameter("branchesToIgnore") ;
 		String id = req.getParameter("id");
 		boolean enabled = "on".equalsIgnoreCase(req.getParameter("enabled"));
 
@@ -154,12 +155,12 @@ public class RepositoryConfigServlet extends HttpServlet
 		boolean isBuildStatus = "on".equalsIgnoreCase(req.getParameter("isBuildStatus"));
 
 		WebHookConfiguration webHookConfiguration = webHookConfigurationDao
-				.createOrUpdateWebHookConfiguration(repository, id, title, url, committersToIgnore, enabled,
+				.createOrUpdateWebHookConfiguration(repository, id, title, url, committersToIgnore, branchesToIgnore, enabled,
 						isTagCreated, isBranchDeleted, isBranchCreated, isRepoPush, isPrDeclined, isPrRescoped,
 						isPrMerged, isPrReopened, isPrUpdated, isPrCreated, isPrCommented, isBuildStatus);
 		if (webHookConfiguration == null)
 		{
-			webHookConfiguration = new DummyWebHookConfiguration(repository.getId(), title, url, committersToIgnore, enabled,
+			webHookConfiguration = new DummyWebHookConfiguration(repository.getId(), title, url, committersToIgnore, branchesToIgnore, enabled,
 					isTagCreated, isBranchDeleted, isBranchCreated, isRepoPush, isPrDeclined, isPrRescoped,
 					isPrMerged, isPrReopened, isPrUpdated, isPrCreated, isPrCommented, isBuildStatus);
 			String template = "nl.topicus.templates.edit";

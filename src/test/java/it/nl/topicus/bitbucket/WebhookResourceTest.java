@@ -19,6 +19,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
         body.put("title", "Test Hook");
         body.put("url", "https://example.com/webhook");
         body.put("committersToIgnore", "bob");
+        body.put("branchesToIgnore", "master");
         body.put("enabled", true);
 
         // Create
@@ -31,6 +32,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
                 .body("title", equalTo(body.get("title")))
                 .body("url", equalTo(body.get("url")))
                 .body("committersToIgnore", equalTo(body.get("committersToIgnore")))
+                .body("branchesToIgnore", equalTo(body.get("branchesToIgnore")))
                 .body("enabled", equalTo(true))
                 .when().put(getUrl(getProject1(), getProject1Repository1()))
                 .jsonPath()
@@ -47,6 +49,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
                     .body("[0].title", equalTo(body.get("title")))
                     .body("[0].url", equalTo(body.get("url")))
                     .body("[0].committersToIgnore", equalTo(body.get("committersToIgnore")))
+                    .body("[0].branchesToIgnore", equalTo(body.get("branchesToIgnore")))
                     .body("[0].enabled", equalTo(true))
                     .when().get(getUrl(getProject1(), getProject1Repository1()));
 
@@ -55,6 +58,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
             update.put("title", "Updated Test");
             update.put("url", "http://example.com/webhook");
             update.put("committersToIgnore", "bob");
+            update.put("branchesToIgnore", "master");
             update.put("enabled", false);
 
             // Update
@@ -68,6 +72,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
                     .body("title", equalTo(update.get("title")))
                     .body("url", equalTo(update.get("url")))
                     .body("committersToIgnore", equalTo(update.get("committersToIgnore")))
+                    .body("branchesToIgnore", equalTo(update.get("branchesToIgnore")))
                     .body("enabled", equalTo(false))
                     .when().post(getUrl(getProject1(), getProject1Repository1()) + "/" + webhookId);
         } finally {
@@ -96,6 +101,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
                 .body("title", equalTo(body.get("title")))
                 .body("url", equalTo(body.get("url")))
                 .body("committersToIgnore", equalTo(""))
+                .body("branchesToIgnore", equalTo(""))
                 .body("enabled", equalTo(true))
                 .when().put(getUrl(getProject1(), getProject1Repository1()))
                 .jsonPath()
@@ -112,6 +118,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
                     .body("[0].title", equalTo(body.get("title")))
                     .body("[0].url", equalTo(body.get("url")))
                     .body("[0].committersToIgnore", equalTo(""))
+                    .body("[0].branchesToIgnore", equalTo(""))
                     .body("[0].enabled", equalTo(true))
                     .when().get(getUrl(getProject1(), getProject1Repository1()));
 
@@ -132,6 +139,7 @@ public class WebhookResourceTest extends BaseRetryingFuncTest {
                     .body("title", equalTo(update.get("title")))
                     .body("url", equalTo(update.get("url")))
                     .body("committersToIgnore", equalTo(""))
+                    .body("branchesToIgnore", equalTo(""))
                     .body("enabled", equalTo(false))
                     .when().post(getUrl(getProject1(), getProject1Repository1()) + "/" + webhookId);
         } finally {
