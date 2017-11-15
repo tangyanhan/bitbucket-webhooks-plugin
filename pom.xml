@@ -173,6 +173,8 @@
                 <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <enableQuickReload>true</enableQuickReload>
+                    <enableFastdev>false</enableFastdev>
                     <products>
                         <product>
                             <id>bitbucket</id>
