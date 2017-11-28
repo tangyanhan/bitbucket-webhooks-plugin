@@ -121,6 +121,7 @@ public class PushEventServiceTest {
     public void testNullConfig() {
         WebHookConfiguration dummyConfiguration = createDummyConfiguration();
         dummyConfiguration.setBranchesToIgnore(null);
+        dummyConfiguration.setCommittersToIgnore(null);
 
         PushEventService pushEventService = new PushEventService(dummyConfiguration);
 

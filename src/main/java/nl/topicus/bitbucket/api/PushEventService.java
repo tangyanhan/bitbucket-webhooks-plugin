@@ -31,18 +31,19 @@ public class PushEventService {
     }
 
     private boolean ignoredByCommiters(Ignorable event, WebHookConfiguration configuration) {
-        List<String> ignoredCommitersList = Arrays.asList(configuration.getCommittersToIgnore().split("\\s?,\\s?"));
-        if (event.getUsername().isPresent()
-                && ignoredCommitersList.size() > 0
-                && ignoredCommitersList.contains(event.getUsername().get())) {
-            LOGGER.debug(
-                    "[repo: {}]| The push event by user {} is ignored because the username is listed as a commit to ignore: [{}({})-committersToIgnore:{}]",
-                    configuration.getRepositoryId(),
-                    event.getUsername(),
-                    configuration.getTitle(),
-                    configuration.getURL(),
-                    configuration.getCommittersToIgnore());
-            return true;
+        if (configuration.getCommittersToIgnore() != null) {
+            List<String> ignoredCommitersList = Arrays.asList(configuration.getCommittersToIgnore().split("\\s?,\\s?"));
+            if (event.getUsername().isPresent()
+                    && ignoredCommitersList.contains(event.getUsername().get())) {
+                LOGGER.debug(
+                        "[repo: {}]| The push event by user {} is ignored because the username is listed as a commit to ignore: [{}({})-committersToIgnore:{}]",
+                        configuration.getRepositoryId(),
+                        event.getUsername(),
+                        configuration.getTitle(),
+                        configuration.getURL(),
+                        configuration.getCommittersToIgnore());
+                return true;
+            }
         }
         return false;
     }
