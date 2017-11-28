@@ -1,7 +1,11 @@
 package nl.topicus.bitbucket.api;
 
 import com.google.common.collect.ImmutableList;
-import nl.topicus.bitbucket.events.*;
+import nl.topicus.bitbucket.events.BitbucketPushChange;
+import nl.topicus.bitbucket.events.BitbucketPushDetail;
+import nl.topicus.bitbucket.events.BitbucketPushEvent;
+import nl.topicus.bitbucket.events.BitbucketServerPullRequestEvent;
+import nl.topicus.bitbucket.events.BuildStatusEvent;
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepository;
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepositoryOwner;
 import nl.topicus.bitbucket.persistence.DummyWebHookConfiguration;

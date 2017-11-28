@@ -1,8 +1,9 @@
 package nl.topicus.bitbucket.model.repository;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import java.util.List;
 import java.util.Map;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 public class BitbucketServerRepository
 {

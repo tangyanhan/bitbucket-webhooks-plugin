@@ -4,7 +4,11 @@ import net.java.ao.Accessor;
 import net.java.ao.Entity;
 import net.java.ao.Mutator;
 import net.java.ao.Preload;
-import net.java.ao.schema.*;
+import net.java.ao.schema.Default;
+import net.java.ao.schema.Indexed;
+import net.java.ao.schema.NotNull;
+import net.java.ao.schema.StringLength;
+import net.java.ao.schema.Table;
 
 @Table("WHConfig")
 @Preload

@@ -3,7 +3,18 @@ package nl.topicus.bitbucket.events;
 import javax.annotation.Nonnull;
 
 import static java.util.Objects.requireNonNull;
-import static nl.topicus.bitbucket.persistence.WebHookConfiguration.*;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_BRANCH_CREATED;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_BRANCH_DELETED;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_BUILD_STATUS;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_PR_COMMENTED;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_PR_CREATED;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_PR_DECLINED;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_PR_MERGED;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_PR_REOPENED;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_PR_RESCOPED;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_PR_UPDATED;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_REPO_PUSH;
+import static nl.topicus.bitbucket.persistence.WebHookConfiguration.COLUMN_TAG_CREATED;
 
 public enum EventType {
 
