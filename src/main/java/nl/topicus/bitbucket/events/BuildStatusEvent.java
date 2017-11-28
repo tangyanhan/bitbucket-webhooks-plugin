@@ -2,7 +2,7 @@ package nl.topicus.bitbucket.events;
 
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepository;
 
-public class BuildStatusEvent
+public class BuildStatusEvent implements Event
 {
     private String commit;
     private String status;

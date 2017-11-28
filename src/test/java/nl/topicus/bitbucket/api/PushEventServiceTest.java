@@ -1,9 +1,7 @@
 package nl.topicus.bitbucket.api;
 
 import com.google.common.collect.ImmutableList;
-import nl.topicus.bitbucket.events.BitbucketPushChange;
-import nl.topicus.bitbucket.events.BitbucketPushDetail;
-import nl.topicus.bitbucket.events.BitbucketPushEvent;
+import nl.topicus.bitbucket.events.*;
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepository;
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepositoryOwner;
 import nl.topicus.bitbucket.persistence.DummyWebHookConfiguration;
@@ -186,6 +184,24 @@ public class PushEventServiceTest {
         dummyEvent.getPush().setChanges(changes);
 
         assertThat(pushEventService.isValidEvent(dummyEvent, dummyConfiguration), is(true));
+    }
+
+    @Test
+    public void testPullRequestEvent() {
+        WebHookConfiguration dummyConfiguration = createDummyConfiguration();
+        PushEventService pushEventService = new PushEventService(dummyConfiguration);
+        BitbucketServerPullRequestEvent bitbucketServerPullRequestEvent = new BitbucketServerPullRequestEvent();
+
+        assertThat(pushEventService.isValidEvent(bitbucketServerPullRequestEvent, dummyConfiguration), is(true));
+    }
+
+    @Test
+    public void testBuildStatusEvent() {
+        WebHookConfiguration dummyConfiguration = createDummyConfiguration();
+        PushEventService pushEventService = new PushEventService(dummyConfiguration);
+        BuildStatusEvent buildStatusEvent = new BuildStatusEvent();
+
+        assertThat(pushEventService.isValidEvent(buildStatusEvent, dummyConfiguration), is(true));
     }
 
     private WebHookConfiguration createDummyConfiguration() {

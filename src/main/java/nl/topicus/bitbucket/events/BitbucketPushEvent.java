@@ -27,42 +27,56 @@ import nl.topicus.bitbucket.model.repository.BitbucketServerRepository;
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepositoryOwner;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BitbucketPushEvent
-{
+public class BitbucketPushEvent implements Event, Ignorable {
     private BitbucketServerRepositoryOwner actor;
 
     private BitbucketServerRepository repository;
 
     private BitbucketPushDetail push;
 
-    public BitbucketServerRepositoryOwner getActor()
-    {
+    public BitbucketServerRepositoryOwner getActor() {
         return actor;
     }
 
-    public void setActor(BitbucketServerRepositoryOwner actor)
-    {
+    public void setActor(BitbucketServerRepositoryOwner actor) {
         this.actor = actor;
     }
 
-    public BitbucketServerRepository getRepository()
-    {
+    public BitbucketServerRepository getRepository() {
         return repository;
     }
 
-    public void setRepository(BitbucketServerRepository repository)
-    {
+    public void setRepository(BitbucketServerRepository repository) {
         this.repository = repository;
     }
 
-    public BitbucketPushDetail getPush()
-    {
+    public BitbucketPushDetail getPush() {
         return push;
     }
 
-    public void setPush(BitbucketPushDetail push)
-    {
+    public void setPush(BitbucketPushDetail push) {
         this.push = push;
+    }
+
+    @Override
+    public Optional<String> getUsername() {
+        return Optional.ofNullable(this.getActor() == null ? null : this.getActor().getUsername());
+    }
+
+    @Override
+    public List<String> getBranches() {
+        if (this.getPush() == null || this.getPush().getChanges() == null) {
+            return new ArrayList<>();
+        }
+        return this.getPush().getChanges()
+                .stream()
+                .map(bitbucketPushChange -> bitbucketPushChange.getNew().getName())
+                .collect(Collectors.toList());
     }
 }

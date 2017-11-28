@@ -1,13 +1,13 @@
 package nl.topicus.bitbucket.api;
 
-import nl.topicus.bitbucket.events.BitbucketPushEvent;
+import nl.topicus.bitbucket.events.Event;
+import nl.topicus.bitbucket.events.Ignorable;
 import nl.topicus.bitbucket.persistence.WebHookConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service class to capsule operations on PushEvents
@@ -22,47 +22,42 @@ public class PushEventService {
         this.configuration = configuration;
     }
 
-    public boolean isValidEvent(BitbucketPushEvent event, WebHookConfiguration configuration) {
-        return !isIgnoredEvent(event, configuration);
+    public boolean isValidEvent(Event event, WebHookConfiguration configuration) {
+        return !(event instanceof Ignorable) || !isIgnoredEvent((Ignorable) event, configuration);
     }
 
-    private boolean isIgnoredEvent(BitbucketPushEvent event, WebHookConfiguration configuration) {
+    private boolean isIgnoredEvent(Ignorable event, WebHookConfiguration configuration) {
         return ignoredByCommiters(event, configuration) || ignoredByBranch(event, configuration);
     }
 
-    private boolean ignoredByCommiters(BitbucketPushEvent event, WebHookConfiguration configuration) {
-        if (configuration.getCommittersToIgnore() != null && event.getActor() != null) {
-            List<String> ignoredCommitersList = Arrays.asList(configuration.getCommittersToIgnore().split("\\s?,\\s?"));
-            if (ignoredCommitersList.size() > 0 && ignoredCommitersList.contains(event.getActor().getUsername())) {
-                LOGGER.debug(
-                        "[repo: {}]| The push event by user {} is ignored because the username is listed as a commit to ignore: [{}({})-committersToIgnore:{}]",
-                        configuration.getRepositoryId(),
-                        event.getActor().getUsername(),
-                        configuration.getTitle(),
-                        configuration.getURL(),
-                        configuration.getCommittersToIgnore());
-                return true;
-            }
+    private boolean ignoredByCommiters(Ignorable event, WebHookConfiguration configuration) {
+        List<String> ignoredCommitersList = Arrays.asList(configuration.getCommittersToIgnore().split("\\s?,\\s?"));
+        if (event.getUsername().isPresent()
+                && ignoredCommitersList.size() > 0
+                && ignoredCommitersList.contains(event.getUsername().get())) {
+            LOGGER.debug(
+                    "[repo: {}]| The push event by user {} is ignored because the username is listed as a commit to ignore: [{}({})-committersToIgnore:{}]",
+                    configuration.getRepositoryId(),
+                    event.getUsername(),
+                    configuration.getTitle(),
+                    configuration.getURL(),
+                    configuration.getCommittersToIgnore());
+            return true;
         }
         return false;
     }
 
-    private boolean ignoredByBranch(BitbucketPushEvent event, WebHookConfiguration configuration) {
-        if (configuration.getBranchesToIgnore() != null && event.getPush() != null && event.getPush().getChanges() != null) {
-            List<String> branchNames = event.getPush().getChanges()
-                    .stream()
-                    .map(bitbucketPushChange -> bitbucketPushChange.getNew().getName())
-                    .collect(Collectors.toList());
-
-            boolean allBranchesIgnored = branchNames.size() > 0 && branchNames
+    private boolean ignoredByBranch(Ignorable event, WebHookConfiguration configuration) {
+        if (configuration.getBranchesToIgnore() != null && event.getBranches().size() > 0) {
+            boolean allBranchesIgnored = event.getBranches()
                     .stream()
                     .allMatch(name -> name.matches(configuration.getBranchesToIgnore()));
 
-            if(allBranchesIgnored){
+            if (allBranchesIgnored) {
                 LOGGER.debug(
                         "[repo: {}]| This push event contains changes on branches {} it will be ignored because all branches are listed as branches to ignore: [{}({})-branchesToIgnore:{}]",
                         configuration.getRepositoryId(),
-                        branchNames,
+                        event.getBranches(),
                         configuration.getTitle(),
                         configuration.getURL(),
                         configuration.getBranchesToIgnore());

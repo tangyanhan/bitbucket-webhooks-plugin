@@ -1,9 +1,9 @@
 package nl.topicus.bitbucket.api;
 
 import com.atlassian.bitbucket.ServiceException;
+import com.atlassian.bitbucket.build.BuildStatusSetEvent;
 import com.atlassian.bitbucket.event.branch.BranchCreatedEvent;
 import com.atlassian.bitbucket.event.branch.BranchDeletedEvent;
-import com.atlassian.bitbucket.build.BuildStatusSetEvent;
 import com.atlassian.bitbucket.event.pull.*;
 import com.atlassian.bitbucket.event.repository.RepositoryDeletionRequestedEvent;
 import com.atlassian.bitbucket.event.repository.RepositoryRefsChangedEvent;
@@ -298,7 +298,7 @@ public class PullRequestListener implements DisposableBean, InitializingBean
             post.setURI(URI.create(webHookConfiguration.getURL()));
             PushEventService pushEventService = new PushEventService(webHookConfiguration);
 
-            if(event instanceof BitbucketPushEvent && pushEventService.isValidEvent((BitbucketPushEvent) event, webHookConfiguration))
+            if(event instanceof Event && pushEventService.isValidEvent((Event) event, webHookConfiguration))
             {
                 try (CloseableHttpResponse response = httpClient.execute(post))
                 {
