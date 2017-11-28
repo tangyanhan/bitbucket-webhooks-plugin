@@ -25,6 +25,7 @@ package nl.topicus.bitbucket.events;
 
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepository;
 import nl.topicus.bitbucket.model.repository.BitbucketServerRepositoryOwner;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.util.ArrayList;
@@ -64,11 +65,13 @@ public class BitbucketPushEvent implements Event, Ignorable {
         this.push = push;
     }
 
+    @JsonIgnore
     @Override
     public Optional<String> getUsername() {
         return Optional.ofNullable(this.getActor() == null ? null : this.getActor().getUsername());
     }
 
+    @JsonIgnore
     @Override
     public List<String> getBranches() {
         if (this.getPush() == null || this.getPush().getChanges() == null) {
@@ -76,6 +79,7 @@ public class BitbucketPushEvent implements Event, Ignorable {
         }
         return this.getPush().getChanges()
                 .stream()
+                .filter(bitbucketPushChange -> bitbucketPushChange != null && bitbucketPushChange.getNew() != null)
                 .map(bitbucketPushChange -> bitbucketPushChange.getNew().getName())
                 .collect(Collectors.toList());
     }
