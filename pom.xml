@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>nl.topicus.bitbucket</groupId>
     <artifactId>bitbucket-webhooks</artifactId>
-    <version>1.6.2-SNAPSHOT</version>
+    <version>1.6.2</version>
 
     <organization>
         <name>Topicus B.V.</name>
@@ -384,7 +384,7 @@
         <connection>scm:git:git@github.com:Eernie/bitbucket-webhooks-plugin.git</connection>
         <url>scm:git:git@github.com:Eernie/bitbucket-webhooks-plugin.git</url>
         <developerConnection>scm:git:git@github.com:Eernie/bitbucket-webhooks-plugin.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>bitbucket-webhooks-1.6.2</tag>
   </scm>
 
 </project>
