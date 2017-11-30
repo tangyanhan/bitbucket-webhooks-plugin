@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>nl.topicus.bitbucket</groupId>
+    <groupId>nl.eernie.bitbucket</groupId>
     <artifactId>bitbucket-webhooks</artifactId>
     <version>1.6.3-SNAPSHOT</version>
 
     <organization>
-        <name>Topicus B.V.</name>
-        <url>http://www.topicus.nl/</url>
+        <name>Eernie</name>
+        <url>http://www.eernie.nl/</url>
     </organization>
 
     <name>bitbucket-webhooks</name>
@@ -344,7 +344,7 @@
     <developers>
         <developer>
             <name>Erwin Oldenkamp</name>
-            <email>erwin.oldenkamp@topicus.nl</email>
+            <email>github@eernie.nl</email>
         </developer>
     </developers>
 
