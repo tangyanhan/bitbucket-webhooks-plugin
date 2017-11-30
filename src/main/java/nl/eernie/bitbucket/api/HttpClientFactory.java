@@ -1,5 +1,6 @@
 package nl.eernie.bitbucket.api;
 
+import nl.eernie.bitbucket.utils.PropertiesUtil;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.stereotype.Component;
@@ -8,9 +9,14 @@ import org.springframework.stereotype.Component;
 public class HttpClientFactory
 {
 
-    public CloseableHttpClient create()
+    public CloseableHttpClient create(String bitbucketVersion)
     {
-        return HttpClientBuilder.create().useSystemProperties().build();
+        String userAgent = String.format("Bitbucket version: %s, Post webhook plugin version: %s", bitbucketVersion, PropertiesUtil.getVersion());
+        return HttpClientBuilder
+                .create()
+                .useSystemProperties()
+                .setUserAgent(userAgent)
+                .build();
     }
 
 }

@@ -59,7 +59,7 @@ public class HttpClientFactoryTest {
 
     @Test
     public void testCreateClient() throws Exception {
-        HttpClient httpClient = httpClientFactory.create();
+        HttpClient httpClient = httpClientFactory.create("");
         assertThat(httpClient, is(notNullValue()));
     }
 
@@ -68,7 +68,7 @@ public class HttpClientFactoryTest {
         System.setProperty("http.proxyHost", hostName);
         System.setProperty("http.proxyPort", "8888");
 
-        HttpClient httpClient = httpClientFactory.create();
+        HttpClient httpClient = httpClientFactory.create("");
         assertThat(httpClient, is(notNullValue()));
         HttpGet httpGet = new HttpGet(serverURI);
         HttpResponse execute = httpClient.execute(httpGet);
@@ -85,7 +85,7 @@ public class HttpClientFactoryTest {
         System.setProperty("http.nonProxyHosts", hostName);
         System.setProperty("http.proxyPort", "8888");
 
-        HttpClient httpClient = httpClientFactory.create();
+        HttpClient httpClient = httpClientFactory.create("");
         assertThat(httpClient, is(notNullValue()));
         HttpGet httpGet = new HttpGet(serverURI);
         HttpResponse execute = httpClient.execute(httpGet);

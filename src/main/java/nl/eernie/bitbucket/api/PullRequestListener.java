@@ -88,8 +88,9 @@ public class PullRequestListener implements DisposableBean, InitializingBean
         this.scmService = scmService;
         this.commitIndex = commitIndex;
         this.webHookConfigurationDao = webHookConfigurationDao;
-        useCanMerge = new Version(applicationPropertiesService.getBuildVersion()).compareTo(new Version(4, 10)) < 0;
-        httpClient = httpClientFactory.create();
+        String bitbucketVersion = applicationPropertiesService.getBuildVersion();
+        useCanMerge = new Version(bitbucketVersion).compareTo(new Version(4, 10)) < 0;
+        httpClient = httpClientFactory.create(bitbucketVersion);
     }
 
     @Override
