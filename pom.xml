@@ -327,8 +327,9 @@
 
         <allow.google.tracking>false</allow.google.tracking>
         <amps.version>6.3.3</amps.version>
-        <!-- This key is used to keep the consistency between the key in atlassian-plugin.xml and the key to generate bundle. -->
-        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+        <!-- This key is used to keep the consistency between the key in atlassian-plugin.xml and the key to generate bundle.
+             We want to perserve our previous package name to not cause data loss. -->
+        <atlassian.plugin.key>nl.topicus.bitbucket.${project.artifactId}</atlassian.plugin.key>
         <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
         <bitbucket.api.version>4.10.2</bitbucket.api.version>
         <bitbucket.test.version>${bitbucket.api.version}</bitbucket.test.version>
