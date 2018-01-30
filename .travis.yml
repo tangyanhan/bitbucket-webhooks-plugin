@@ -23,7 +23,7 @@ env:
   matrix:
     - BITBUCKET_TEST_VERSION=4.6.4
     - BITBUCKET_TEST_VERSION=4.10.2
-    - BITBUCKET_TEST_VERSION=5.5.0
+    - BITBUCKET_TEST_VERSION=5.7.1
 
 cache:
 # Caching is not allowed for 'sudo: required' builds.
