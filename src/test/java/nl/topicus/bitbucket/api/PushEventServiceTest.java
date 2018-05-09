@@ -51,6 +51,42 @@ public class PushEventServiceTest {
     }
 
     @Test
+    public void testNegativeLookAheadIgnoreBranchesWithNoDevelopBranch() {
+        WebHookConfiguration dummyConfiguration = createDummyConfiguration();
+        dummyConfiguration.setBranchesToIgnore("^(?!develop$).*");
+
+        PushEventService pushEventService = new PushEventService(dummyConfiguration);
+
+        BitbucketPushEvent dummyEvent = createDummyEvent();
+        ImmutableList<BitbucketPushChange> changes = ImmutableList.of(
+                createDummyChange("feature/foo"),
+                createDummyChange("feature/bar"),
+                createDummyChange("master"),
+                createDummyChange("feature/develop"));
+        dummyEvent.getPush().setChanges(changes);
+
+        assertThat(pushEventService.isValidEvent(dummyEvent, dummyConfiguration), is(false));
+    }
+
+    @Test
+    public void testNegativeLookAheadIgnoreBranchesWithDevelopBranch() {
+        WebHookConfiguration dummyConfiguration = createDummyConfiguration();
+        dummyConfiguration.setBranchesToIgnore("^(?!develop$).*");
+
+        PushEventService pushEventService = new PushEventService(dummyConfiguration);
+
+        BitbucketPushEvent dummyEvent = createDummyEvent();
+        ImmutableList<BitbucketPushChange> changes = ImmutableList.of(
+                createDummyChange("feature/foo"),
+                createDummyChange("feature/bar"),
+                createDummyChange("master"),
+                createDummyChange("develop"));
+        dummyEvent.getPush().setChanges(changes);
+
+        assertThat(pushEventService.isValidEvent(dummyEvent, dummyConfiguration), is(true));
+    }
+
+    @Test
     public void testValidWhenAtLeastOneBranchIsValid() {
         WebHookConfiguration dummyConfiguration = createDummyConfiguration();
         dummyConfiguration.setBranchesToIgnore("feature/*");
