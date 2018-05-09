@@ -1,4 +1,4 @@
-package nl.eernie.bitbucket.utils;
+package nl.topicus.bitbucket.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

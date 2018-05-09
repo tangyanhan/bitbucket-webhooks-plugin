@@ -1,6 +1,6 @@
 package nl.topicus.bitbucket.api;
 
-import nl.eernie.bitbucket.utils.PropertiesUtil;
+import nl.topicus.bitbucket.utils.PropertiesUtil;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.stereotype.Component;
