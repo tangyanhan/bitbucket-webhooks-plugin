@@ -6,8 +6,14 @@ import java.util.Properties;
 
 public class PropertiesUtil
 {
+
+    private static String pluginVersion;
+
     public static String getVersion() {
-        return getProperties().getProperty("pluginVersion", "0");
+        if (pluginVersion == null) {
+            pluginVersion = getProperties().getProperty("pluginVersion", "0");
+        }
+        return pluginVersion;
     }
 
     private static Properties getProperties()
