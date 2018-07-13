@@ -214,7 +214,7 @@ public class PullRequestListener implements DisposableBean, InitializingBean
             String url = event.getBuildStatus().getUrl();
             // Due to https://jira.atlassian.com/browse/BSERV-10986 we have to check for null
             //noinspection ConstantConditions
-            if (buildState != null || url != null) {
+            if (buildState != null && url != null) {
                 buildStatusEvent.setCommit(event.getCommitId());
                 buildStatusEvent.setStatus(buildState.toString());
                 buildStatusEvent.setUrl(url);
