@@ -2,6 +2,7 @@ package nl.topicus.bitbucket.api;
 
 import com.atlassian.bitbucket.ServiceException;
 import com.atlassian.bitbucket.build.BuildState;
+import com.atlassian.bitbucket.build.BuildStatus;
 import com.atlassian.bitbucket.build.BuildStatusSetEvent;
 import com.atlassian.bitbucket.event.branch.BranchCreatedEvent;
 import com.atlassian.bitbucket.event.branch.BranchDeletedEvent;
@@ -208,23 +209,30 @@ public class PullRequestListener implements DisposableBean, InitializingBean
     @EventListener
     public void onBuildStatusSetEvent(BuildStatusSetEvent event) throws IOException
     {
+        String commitId = event.getCommitId();
+        IndexedCommit commit = commitIndex.getCommit(commitId);
+        if (commit == null) {
+            return;
+        }
+
+        BuildStatus buildStatus = event.getBuildStatus();
+        BuildState buildState = buildStatus.getState();
+        String url = buildStatus.getUrl();
+        // Due to https://jira.atlassian.com/browse/BSERV-10986 we have to check for null
+        //noinspection ConstantConditions
+        if (buildState == null || url == null) {
+            return;
+        }
+
         executorService.submit(() -> {
             BuildStatusEvent buildStatusEvent = new BuildStatusEvent();
-            BuildState buildState = event.getBuildStatus().getState();
-            String url = event.getBuildStatus().getUrl();
-            // Due to https://jira.atlassian.com/browse/BSERV-10986 we have to check for null
-            //noinspection ConstantConditions
-            if (buildState != null && url != null) {
-                buildStatusEvent.setCommit(event.getCommitId());
-                buildStatusEvent.setStatus(buildState.toString());
-                buildStatusEvent.setUrl(url);
-                IndexedCommit commit = commitIndex.getCommit(event.getCommitId());
-                if (commit != null) {
-                    for (Repository repo : commit.getRepositories()) {
-                        buildStatusEvent.setRepository(Models.createRepository(repo, applicationPropertiesService));
-                        sendEvents(buildStatusEvent, repo, EventType.BUILD_STATUS);
-                    }
-                }
+            buildStatusEvent.setCommit(commitId);
+            buildStatusEvent.setStatus(buildState.toString());
+            buildStatusEvent.setUrl(url);
+
+            for (Repository repo : commit.getRepositories()) {
+                buildStatusEvent.setRepository(Models.createRepository(repo, applicationPropertiesService));
+                sendEvents(buildStatusEvent, repo, EventType.BUILD_STATUS);
             }
         });
     }
