@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>nl.topicus.bitbucket</groupId>
     <artifactId>bitbucket-webhooks</artifactId>
-    <version>1.6.3</version>
+    <version>1.6.4-SNAPSHOT</version>
 
     <organization>
         <name>Eernie</name>
@@ -390,7 +390,7 @@
         <connection>scm:git:git@github.com:Eernie/bitbucket-webhooks-plugin.git</connection>
         <url>scm:git:git@github.com:Eernie/bitbucket-webhooks-plugin.git</url>
         <developerConnection>scm:git:git@github.com:Eernie/bitbucket-webhooks-plugin.git</developerConnection>
-        <tag>bitbucket-webhooks-1.6.3</tag>
+        <tag>HEAD</tag>
   </scm>
 
 </project>
