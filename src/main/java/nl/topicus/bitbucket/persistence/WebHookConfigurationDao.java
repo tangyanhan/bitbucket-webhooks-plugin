@@ -65,7 +65,7 @@ public class WebHookConfigurationDao {
     public WebHookConfiguration createOrUpdateWebHookConfiguration(Repository rep, String id, String title, String url,
                                                                    String committersToIgnore, String branchesToIgnore, boolean enabled) {
         return createOrUpdateWebHookConfiguration(rep, id, title, url, committersToIgnore, branchesToIgnore, enabled,
-                false, true, true, true, true,
+                true, false, true, true, true,
                 true, true, true, true, true,
                 false, false
         );
