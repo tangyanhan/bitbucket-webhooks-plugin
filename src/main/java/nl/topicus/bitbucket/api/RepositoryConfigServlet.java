@@ -46,7 +46,7 @@ public class RepositoryConfigServlet extends HttpServlet
 		resp.setContentType("text/html;charset=UTF-8");
 		try
 		{
-			soyTemplateRenderer.render(resp.getWriter(), "nl.topicus.bitbucket.bitbucket-webhooks:templates-soy", templateName, data);
+			soyTemplateRenderer.render(resp.getWriter(), "nl.topicus.bitbucket.dcs-bitbucket-webhooks:templates-soy", templateName, data);
 		}
 		catch (SoyException e)
 		{

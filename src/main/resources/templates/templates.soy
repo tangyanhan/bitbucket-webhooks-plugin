@@ -11,7 +11,7 @@
     <meta name="decorator" content="bitbucket.repository.settings">
     <meta name="projectKey" content="{$repository.project.key}">
     <meta name="repositorySlug" content="{$repository.slug}">
-    <meta name="activeTab" content="repository-settings-plugin-tab">
+    <meta name="activeTab" content="repository-settings-plugin-tab-dcs">
     <title>{$repository.slug} / Webhooks</title>
 </head>
 <body>
@@ -21,7 +21,7 @@
     <header class="aui-page-header">
         <div class="aui-page-header-inner">
             <div class="aui-page-header-main">
-                <h2>Webhooks</h2>
+                <h2>DCS Webhooks</h2>
             </div>
             <div class="aui-page-header-actions">
             </div>
@@ -30,6 +30,8 @@
     <div class="page-description">
         <p>Webhooks allow you to extend what Bitbucket does when the repository changes (for example, new code is pushed or a pull request is merged).</p>
         <p/>
+        <p>These webhooks are managed by dcs-bitbucket-webhooks plugin</p>
+        <p>Push events and pullrequest events are enabled by default when a new webhook is created(branch/tag create, pullrequest create/update/reopen)</p>
     </div>
     <div>
         <p>
@@ -90,7 +92,7 @@
        <meta name="decorator" content="bitbucket.repository.settings">
        <meta name="projectKey" content="{$repository.project.key}">
        <meta name="repositorySlug" content="{$repository.slug}">
-       <meta name="activeTab" content="repository-settings-plugin-tab">
+       <meta name="activeTab" content="repository-settings-plugin-tab-dcs">
        <title>{$repository.slug} / Webhooks</title>
    </head>
    <body>

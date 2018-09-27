@@ -3,15 +3,15 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>nl.topicus.bitbucket</groupId>
-    <artifactId>bitbucket-webhooks</artifactId>
+    <artifactId>dcs-bitbucket-webhooks</artifactId>
     <version>1.6.4-SNAPSHOT</version>
 
     <organization>
-        <name>Eernie</name>
-        <url>http://www.eernie.nl/</url>
+        <name>DaoCloud</name>
+        <url>https://daocloud.io</url>
     </organization>
 
-    <name>bitbucket-webhooks</name>
+    <name>dcs-bitbucket-webhooks</name>
     <description>This is the Webhooks plugin, It sends out json messages when a PR is created, updated or when a push occurs.</description>
     <packaging>atlassian-plugin</packaging>
 

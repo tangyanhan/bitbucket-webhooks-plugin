@@ -16,7 +16,7 @@
     <servlet name="Repository Servlet" key="repository-servlet"
              class="nl.topicus.bitbucket.api.RepositoryConfigServlet">
         <description key="repository-servlet.description">The Repository Servlet Plugin</description>
-        <url-pattern>/webhooks/repository/*</url-pattern>
+        <url-pattern>/dcs-webhooks/repository/*</url-pattern>
     </servlet>
 
     <client-resource key="templates-soy" name="Soy Templates">
@@ -37,14 +37,14 @@
 
         <context>bitbucket-webhooks</context>
     </web-resource>
-    <web-item key="repository-settings-plugin-tab" name="Repository settings navigation tab"
+    <web-item key="repository-settings-plugin-tab-dcs" name="Repository settings navigation tab"
               section="bitbucket.repository.settings.panel/repository-workflow-section" weight="50">
-        <label>Post Webhooks</label>
-        <link>/plugins/servlet/webhooks/repository/${repository.project.key}/${repository.slug}/settings</link>
-        <tooltip>Hooray, we have a tab!</tooltip>
+        <label>DCS Webhooks</label>
+        <link>/plugins/servlet/dcs-webhooks/repository/${repository.project.key}/${repository.slug}/settings</link>
+        <tooltip>WebHooks for DCS</tooltip>
     </web-item>
 
-    <rest key="nl.topicus.bitbucket.api.WebhookResource" path="/webhook" version="1.0">
+    <rest key="nl.topicus.bitbucket.api.WebhookResource" path="/dcs-webhook" version="1.0">
         <description>Provides a Rest service for so other components can CRUD webhooks.</description>
     </rest>
 
